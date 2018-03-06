@@ -1,0 +1,15 @@
+{
+  "name": "OSCParser",
+  "description": "An OSC processing library.",
+  "keywords": "osc, structured-data, arduino, teensy",
+  "authors": {
+    "name": "Shawn Silverman",
+    "email": "shawn@pobox.com",
+    "maintainer": true
+  },
+  "version": "1.0.0",
+  "license": "BSD-3-Clause",
+  "homepage": "https://github.com/ssilverman",
+  "frameworks": "arduino",
+  "platforms": "*"
+}
