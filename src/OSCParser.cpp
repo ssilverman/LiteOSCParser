@@ -192,7 +192,7 @@ int OSCParser::getStringLength(int index) const {
 }
 
 void OSCParser::getString(int index, char *buf) const {
-  size_t slen = getStringLength(index);
+  int slen = getStringLength(index);
   if (slen == 0) {
     return;
   }
@@ -212,7 +212,7 @@ int OSCParser::getBlobLength(int index) const {
 }
 
 void OSCParser::getBlob(int index, uint8_t *buf) const {
-  size_t blen = getBlobLength(index);
+  int blen = getBlobLength(index);
   if (blen == 0) {
     return;
   }
