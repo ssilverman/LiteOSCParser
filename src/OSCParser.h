@@ -22,8 +22,8 @@ class OSCParser {
   bool parse(const uint8_t *buf, int len);
 
   // Gets the address length, not including the NULL terminator.
-  size_t getAddressLength() const {
-    return static_cast<size_t>(addressLen_);
+  int getAddressLength() const {
+    return addressLen_;
   }
 
   // Copies the address into the given buffer. The buffer must be at least
@@ -45,7 +45,7 @@ class OSCParser {
   int match(int offset, const char *pattern) const;
 
   // Returns the current argument count.
-  int argCount() const {
+  int getArgCount() const {
     return tagsLen_;
   }
 

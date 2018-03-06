@@ -1,9 +1,22 @@
+// main.cpp is part of OSCParser.
+// (c) 2018 Shawn Silverman
+
+// Other includes
 #include <Arduino.h>
 
+// --------------------------------------------------------------------------
+//  Main program
+// --------------------------------------------------------------------------
+
+void runTests();
+
 void setup() {
-    // put your setup code here, to run once:
+  Serial.begin(9600);
+  while (!Serial && millis() < 2000) {
+  }
+  delay(4000);
 }
 
 void loop() {
-    // put your main code here, to run repeatedly:
+  runTests();
 }

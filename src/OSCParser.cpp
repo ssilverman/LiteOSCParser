@@ -1,3 +1,6 @@
+// OSCParser.cpp is part of OSCParser.
+// (c) 2018 Shawn Silverman
+
 #include "OSCParser.h"
 
 // C++ includes
@@ -25,10 +28,6 @@ bool OSCParser::parse(const uint8_t *buf, int len) {
     return false;
   }
 
-  if (bufSize_ < len) {
-    buf_ = reinterpret_cast<uint8_t*>(realloc(buf_, len));
-  }
-
   int index = 0;
 
   // Address
@@ -42,6 +41,15 @@ bool OSCParser::parse(const uint8_t *buf, int len) {
   }
   addressLen_ = index - 1 - addressIndex_;
   index = alignOffset(index);
+
+  // Copy everything into our local buffer
+  if (bufSize_ < len) {
+    buf_ = reinterpret_cast<uint8_t*>(realloc(buf_, len));
+    if (buf_ == nullptr) {
+      return false;
+    }
+  }
+  memcpy(buf_, buf, len);
 
   // Type tags
 
@@ -65,14 +73,15 @@ bool OSCParser::parse(const uint8_t *buf, int len) {
   if (argIndexesSize_ < tagsLen_) {
     argIndexes_ = reinterpret_cast<int*>(realloc(argIndexes_,
                                                  tagsLen_ * sizeof(int)));
+    if (argIndexes_ == nullptr) {
+      return false;
+    }
   }
   index = parseArgs(buf, index, len);
   if (index < 0) {
     return false;
   }
 
-  // Copy into our local buffer
-  memcpy(buf_, buf, len);
   return true;
 }
 
@@ -131,7 +140,7 @@ bool OSCParser::strcmploc(const char *s1, const char *s2, int *loc) {
 
 void OSCParser::getAddress(char *buf) const {
   memcpy(buf, &buf_[addressIndex_], addressLen_);
-  buf[addressLen_] = 0;
+  buf[addressLen_] = '\0';
 }
 
 int32_t OSCParser::getInt(int index) const {
@@ -188,7 +197,7 @@ void OSCParser::getString(int index, char *buf) const {
     return;
   }
   memcpy(buf, &buf_[argIndexes_[index]], slen);
-  buf[slen] = 0;
+  buf[slen] = '\0';
 }
 
 size_t OSCParser::getBlobLength(int index) const {
@@ -232,9 +241,6 @@ int OSCParser::parseString(const uint8_t *buf, int off, int len) {
 
 int OSCParser::parseArgs(const uint8_t *buf, int off, int len) {
   for (int i = 0; i < tagsLen_; i++) {
-    if (off >= len) {
-      return -1;
-    }
     argIndexes_[i] = off;
     switch (buf[i + tagsIndex_]) {
       case 'i':  // int32
