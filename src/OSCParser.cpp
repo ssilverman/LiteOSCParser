@@ -184,7 +184,7 @@ double OSCParser::getDouble(int index) const {
   return d;
 }
 
-size_t OSCParser::getStringLength(int index) const {
+int OSCParser::getStringLength(int index) const {
   if (!isString(index)) {
     return 0;
   }
@@ -200,7 +200,7 @@ void OSCParser::getString(int index, char *buf) const {
   buf[slen] = '\0';
 }
 
-size_t OSCParser::getBlobLength(int index) const {
+int OSCParser::getBlobLength(int index) const {
   if (!isBlob(index)) {
     return 0;
   }

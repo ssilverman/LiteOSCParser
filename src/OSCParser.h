@@ -6,7 +6,6 @@
 #define OSCPARSER_H_
 
 // C++ includes
-#include <cstddef>
 #include <cstdint>
 
 class OSCParser {
@@ -111,7 +110,7 @@ class OSCParser {
 
   // Gets the string length at the given index. This will return zero
   // if the index is out of range or if the argument is the wrong type.
-  size_t getStringLength(int index) const;
+  int getStringLength(int index) const;
 
   // Gets the string at the given index and stores if in the given buffer.
   // A NULL terminator will be added always. This will return the string
@@ -121,7 +120,7 @@ class OSCParser {
 
   // Gets the blob length at the given index. This will return zero
   // if the index is out of range or if the argument is the wrong type.
-  size_t getBlobLength(int index) const;
+  int getBlobLength(int index) const;
 
   // Gets the blob at the given index and stores if in the given buffer.
   // This will return the blob length actually copied into the buffer.
