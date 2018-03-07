@@ -12,7 +12,7 @@ test(args_none) {
   for (size_t i = 0; i < sizeof(buf); i++) {
     assertEqual(osc.getMessageBuf()[i], buf[i]);
   }
-  assertEqual(osc.getAddressLength(), 2);
+  assertEqual(osc.getAddress(), "/a");
   assertEqual(osc.getArgCount(), 0);
   assertFalse(osc.isInt(0));
 }
@@ -24,7 +24,7 @@ test(args_none_with_extra) {
   for (size_t i = 0; i < sizeof(buf); i++) {
     assertEqual(osc.getMessageBuf()[i], buf[i]);
   }
-  assertEqual(osc.getAddressLength(), 2);
+  assertEqual(osc.getAddress(), "/a");
   assertEqual(osc.getArgCount(), 0);
   assertFalse(osc.isInt(0));
 }
@@ -36,7 +36,7 @@ test(args_none_with_good_start) {
   for (size_t i = 0; i < sizeof(buf); i++) {
     assertEqual(osc.getMessageBuf()[i], buf[i]);
   }
-  assertEqual(osc.getAddressLength(), 2);
+  assertEqual(osc.getAddress(), "/a");
   assertEqual(osc.getArgCount(), 0);
   assertFalse(osc.isInt(0));
 }
@@ -59,7 +59,7 @@ test(args_one_int) {
   for (size_t i = 0; i < sizeof(buf); i++) {
     assertEqual(osc.getMessageBuf()[i], buf[i]);
   }
-  assertEqual(osc.getAddressLength(), 2);
+  assertEqual(osc.getAddress(), "/a");
   assertEqual(osc.getArgCount(), 1);
   assertTrue(osc.isInt(0));
   assertFalse(osc.isFloat(0));
@@ -75,7 +75,7 @@ test(args_one_float) {
   for (size_t i = 0; i < sizeof(buf); i++) {
     assertEqual(osc.getMessageBuf()[i], buf[i]);
   }
-  assertEqual(osc.getAddressLength(), 2);
+  assertEqual(osc.getAddress(), "/a");
   assertEqual(osc.getArgCount(), 1);
   assertTrue(osc.isFloat(0));
   assertFalse(osc.isInt(0));
@@ -91,7 +91,7 @@ test(args_one_long) {
   for (size_t i = 0; i < sizeof(buf); i++) {
     assertEqual(osc.getMessageBuf()[i], buf[i]);
   }
-  assertEqual(osc.getAddressLength(), 2);
+  assertEqual(osc.getAddress(), "/a");
   assertEqual(osc.getArgCount(), 1);
   assertTrue(osc.isLong(0));
   assertTrue(osc.getLong(0) == 0x0102030405060708LL);
@@ -105,7 +105,7 @@ test(args_one_time) {
   for (size_t i = 0; i < sizeof(buf); i++) {
     assertEqual(osc.getMessageBuf()[i], buf[i]);
   }
-  assertEqual(osc.getAddressLength(), 2);
+  assertEqual(osc.getAddress(), "/a");
   assertEqual(osc.getArgCount(), 1);
   assertTrue(osc.isTime(0));
   assertTrue(osc.getTime(0) == 0x0102030405060708LL);
@@ -119,7 +119,7 @@ test(args_one_double) {
   for (size_t i = 0; i < sizeof(buf); i++) {
     assertEqual(osc.getMessageBuf()[i], buf[i]);
   }
-  assertEqual(osc.getAddressLength(), 2);
+  assertEqual(osc.getAddress(), "/a");
   assertEqual(osc.getArgCount(), 1);
   assertTrue(osc.isDouble(0));
   assertEqual(osc.getDouble(0), 1.1);
@@ -132,7 +132,7 @@ test(args_one_true) {
   for (size_t i = 0; i < sizeof(buf); i++) {
     assertEqual(osc.getMessageBuf()[i], buf[i]);
   }
-  assertEqual(osc.getAddressLength(), 2);
+  assertEqual(osc.getAddress(), "/a");
   assertEqual(osc.getArgCount(), 1);
   assertTrue(osc.isBoolean(0));
   assertEqual(osc.getBoolean(0), true);
@@ -145,7 +145,7 @@ test(args_one_false) {
   for (size_t i = 0; i < sizeof(buf); i++) {
     assertEqual(osc.getMessageBuf()[i], buf[i]);
   }
-  assertEqual(osc.getAddressLength(), 2);
+  assertEqual(osc.getAddress(), "/a");
   assertEqual(osc.getArgCount(), 1);
   assertTrue(osc.isBoolean(0));
   assertEqual(osc.getBoolean(0), false);
@@ -159,7 +159,7 @@ test(args_one_true_one_int) {
   for (size_t i = 0; i < sizeof(buf); i++) {
     assertEqual(osc.getMessageBuf()[i], buf[i]);
   }
-  assertEqual(osc.getAddressLength(), 2);
+  assertEqual(osc.getAddress(), "/a");
   assertEqual(osc.getArgCount(), 2);
   assertTrue(osc.isBoolean(0));
   assertEqual(osc.getBoolean(0), true);
@@ -175,7 +175,7 @@ test(args_one_int_one_true) {
   for (size_t i = 0; i < sizeof(buf); i++) {
     assertEqual(osc.getMessageBuf()[i], buf[i]);
   }
-  assertEqual(osc.getAddressLength(), 2);
+  assertEqual(osc.getAddress(), "/a");
   assertEqual(osc.getArgCount(), 2);
   assertTrue(osc.isInt(0));
   assertEqual(osc.getInt(0), 0x01020304);
@@ -191,7 +191,7 @@ test(args_one_string) {
   for (size_t i = 0; i < sizeof(buf); i++) {
     assertEqual(osc.getMessageBuf()[i], buf[i]);
   }
-  assertEqual(osc.getAddressLength(), 2);
+  assertEqual(osc.getAddress(), "/a");
   assertEqual(osc.getArgCount(), 1);
   assertTrue(osc.isString(0));
   assertEqual(osc.getString(0), "hi!");
@@ -206,7 +206,7 @@ test(args_one_blob) {
   for (size_t i = 0; i < sizeof(buf); i++) {
     assertEqual(osc.getMessageBuf()[i], buf[i]);
   }
-  assertEqual(osc.getAddressLength(), 2);
+  assertEqual(osc.getAddress(), "/a");
   assertEqual(osc.getArgCount(), 1);
   assertTrue(osc.isBlob(0));
   assertEqual(osc.getBlobLength(0), 4);

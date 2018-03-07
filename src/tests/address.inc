@@ -12,7 +12,7 @@ test(address_good_start) {
   for (size_t i = 0; i < sizeof(buf); i++) {
     assertEqual(osc.getMessageBuf()[i], buf[i]);
   }
-  assertEqual(osc.getAddressLength(), 1);
+  assertEqual(osc.getAddress(), "/");
   assertEqual(osc.getArgCount(), 0);
 }
 
@@ -28,7 +28,7 @@ test(address_valid_2) {
   for (size_t i = 0; i < sizeof(buf); i++) {
     assertEqual(osc.getMessageBuf()[i], buf[i]);
   }
-  assertEqual(osc.getAddressLength(), 2);
+  assertEqual(osc.getAddress(), "/a");
   assertEqual(osc.getArgCount(), 0);
 }
 
@@ -39,6 +39,6 @@ test(address_valid_3) {
   for (size_t i = 0; i < sizeof(buf); i++) {
     assertEqual(osc.getMessageBuf()[i], buf[i]);
   }
-  assertEqual(osc.getAddressLength(), 3);
+  assertEqual(osc.getAddress(), "/a/");
   assertEqual(osc.getArgCount(), 0);
 }

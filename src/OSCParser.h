@@ -85,14 +85,9 @@ class OSCParser {
   // whether the failure was due to not enough space in the internal buffer.
   bool parse(const uint8_t *buf, int len);
 
-  // Gets the address length, not including the NULL terminator.
-  int getAddressLength() const {
-    return addressLen_;
-  }
-
-  // Copies the address into the given buffer. The buffer must be at least
-  // large enough to hold the address plus the NULL terminator.
-  void getAddress(char *buf) const;
+  // Gets a pointer to the address. This returns a pointer into the
+  // internal buffer.
+  const char *getAddress() const;
 
   // Returns whether the address fully matches the given pattern,
   // starting at offset in the address.

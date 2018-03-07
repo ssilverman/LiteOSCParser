@@ -12,7 +12,7 @@ test(add_first_int) {
   for (size_t i = 0; i < sizeof(buf); i++) {
     assertEqual(osc.getMessageBuf()[i], buf[i]);
   }
-  assertEqual(osc.getAddressLength(), 2);
+  assertEqual(osc.getAddress(), "/a");
   assertEqual(osc.getArgCount(), 0);
 
   assertTrue(osc.addInt(0x01020304));
@@ -35,7 +35,7 @@ test(add_int_to_empty_tags) {
   for (size_t i = 0; i < sizeof(buf); i++) {
     assertEqual(osc.getMessageBuf()[i], buf[i]);
   }
-  assertEqual(osc.getAddressLength(), 2);
+  assertEqual(osc.getAddress(), "/a");
   assertEqual(osc.getArgCount(), 0);
 
   assertTrue(osc.addInt(0x01020304));
@@ -59,7 +59,7 @@ test(add_second_int) {
   for (size_t i = 0; i < sizeof(buf); i++) {
     assertEqual(osc.getMessageBuf()[i], buf[i]);
   }
-  assertEqual(osc.getAddressLength(), 2);
+  assertEqual(osc.getAddress(), "/a");
   assertEqual(osc.getArgCount(), 1);
   assertTrue(osc.isInt(0));
   assertEqual(osc.getInt(0), 0x01020304);
@@ -85,7 +85,7 @@ test(add_int_to_full) {
   for (size_t i = 0; i < sizeof(buf); i++) {
     assertEqual(osc.getMessageBuf()[i], buf[i]);
   }
-  assertEqual(osc.getAddressLength(), 2);
+  assertEqual(osc.getAddress(), "/a");
   assertEqual(osc.getArgCount(), 2);
   assertTrue(osc.isInt(0));
   assertEqual(osc.getInt(0), 0x01020304);
@@ -114,7 +114,7 @@ test(add_first_float) {
   for (size_t i = 0; i < sizeof(buf); i++) {
     assertEqual(osc.getMessageBuf()[i], buf[i]);
   }
-  assertEqual(osc.getAddressLength(), 2);
+  assertEqual(osc.getAddress(), "/a");
   assertEqual(osc.getArgCount(), 0);
 
   assertTrue(osc.addFloat(-1.1f));
@@ -137,7 +137,7 @@ test(add_first_long) {
   for (size_t i = 0; i < sizeof(buf); i++) {
     assertEqual(osc.getMessageBuf()[i], buf[i]);
   }
-  assertEqual(osc.getAddressLength(), 2);
+  assertEqual(osc.getAddress(), "/a");
   assertEqual(osc.getArgCount(), 0);
 
   assertTrue(osc.addLong(0x0102030405060708LL));
@@ -160,7 +160,7 @@ test(add_first_time) {
   for (size_t i = 0; i < sizeof(buf); i++) {
     assertEqual(osc.getMessageBuf()[i], buf[i]);
   }
-  assertEqual(osc.getAddressLength(), 2);
+  assertEqual(osc.getAddress(), "/a");
   assertEqual(osc.getArgCount(), 0);
 
   assertTrue(osc.addTime(0x0102030405060708LL));
@@ -183,7 +183,7 @@ test(add_first_double) {
   for (size_t i = 0; i < sizeof(buf); i++) {
     assertEqual(osc.getMessageBuf()[i], buf[i]);
   }
-  assertEqual(osc.getAddressLength(), 2);
+  assertEqual(osc.getAddress(), "/a");
   assertEqual(osc.getArgCount(), 0);
 
   assertTrue(osc.addDouble(4.1));
@@ -206,7 +206,7 @@ test(add_first_boolean_true) {
   for (size_t i = 0; i < sizeof(buf); i++) {
     assertEqual(osc.getMessageBuf()[i], buf[i]);
   }
-  assertEqual(osc.getAddressLength(), 2);
+  assertEqual(osc.getAddress(), "/a");
   assertEqual(osc.getArgCount(), 0);
 
   assertTrue(osc.addBoolean(true));
@@ -228,7 +228,7 @@ test(add_first_boolean_false) {
   for (size_t i = 0; i < sizeof(buf); i++) {
     assertEqual(osc.getMessageBuf()[i], buf[i]);
   }
-  assertEqual(osc.getAddressLength(), 2);
+  assertEqual(osc.getAddress(), "/a");
   assertEqual(osc.getArgCount(), 0);
 
   assertTrue(osc.addBoolean(false));
@@ -251,7 +251,7 @@ test(add_boolean_second) {
   for (size_t i = 0; i < sizeof(buf); i++) {
     assertEqual(osc.getMessageBuf()[i], buf[i]);
   }
-  assertEqual(osc.getAddressLength(), 2);
+  assertEqual(osc.getAddress(), "/a");
   assertEqual(osc.getArgCount(), 1);
   assertTrue(osc.isInt(0));
   assertEqual(osc.getInt(0), 0x01020304);
@@ -277,7 +277,7 @@ test(add_boolean_to_full) {
   for (size_t i = 0; i < sizeof(buf); i++) {
     assertEqual(osc.getMessageBuf()[i], buf[i]);
   }
-  assertEqual(osc.getAddressLength(), 2);
+  assertEqual(osc.getAddress(), "/a");
   assertEqual(osc.getArgCount(), 2);
   assertTrue(osc.isInt(0));
   assertEqual(osc.getInt(0), 0x01020304);
@@ -305,7 +305,7 @@ test(add_string_not_aligned) {
   for (size_t i = 0; i < sizeof(buf); i++) {
     assertEqual(osc.getMessageBuf()[i], buf[i]);
   }
-  assertEqual(osc.getAddressLength(), 2);
+  assertEqual(osc.getAddress(), "/a");
   assertEqual(osc.getArgCount(), 0);
 
   assertTrue(osc.addString("hello"));
@@ -328,7 +328,7 @@ test(add_string_aligned) {
   for (size_t i = 0; i < sizeof(buf); i++) {
     assertEqual(osc.getMessageBuf()[i], buf[i]);
   }
-  assertEqual(osc.getAddressLength(), 2);
+  assertEqual(osc.getAddress(), "/a");
   assertEqual(osc.getArgCount(), 0);
 
   assertTrue(osc.addString("hi!"));
@@ -351,7 +351,7 @@ test(add_blob_not_aligned) {
   for (size_t i = 0; i < sizeof(buf); i++) {
     assertEqual(osc.getMessageBuf()[i], buf[i]);
   }
-  assertEqual(osc.getAddressLength(), 2);
+  assertEqual(osc.getAddress(), "/a");
   assertEqual(osc.getArgCount(), 0);
 
   assertTrue(osc.addBlob(reinterpret_cast<const uint8_t*>("hello"), 6));
@@ -376,7 +376,7 @@ test(add_blob_aligned) {
   for (size_t i = 0; i < sizeof(buf); i++) {
     assertEqual(osc.getMessageBuf()[i], buf[i]);
   }
-  assertEqual(osc.getAddressLength(), 2);
+  assertEqual(osc.getAddress(), "/a");
   assertEqual(osc.getArgCount(), 0);
 
   assertTrue(osc.addBlob(reinterpret_cast<const uint8_t*>("hi!"), 4));

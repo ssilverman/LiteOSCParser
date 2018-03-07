@@ -32,7 +32,7 @@ test(packet_extra_bytes) {
   for (size_t i = 0; i < 4; i++) {
     assertEqual(osc.getMessageBuf()[i], buf[i]);
   }
-  assertEqual(osc.getAddressLength(), 2);
+  assertEqual(osc.getAddress(), "/a");
   assertEqual(osc.getArgCount(), 0);
 }
 
@@ -45,7 +45,7 @@ test(packet_args_with_extra_bytes) {
   for (size_t i = 0; i < 12; i++) {
     assertEqual(osc.getMessageBuf()[i], buf[i]);
   }
-  assertEqual(osc.getAddressLength(), 2);
+  assertEqual(osc.getAddress(), "/a");
   assertEqual(osc.getArgCount(), 1);
   assertTrue(osc.isInt(0));
   assertEqual(osc.getInt(0), 0x01020304);

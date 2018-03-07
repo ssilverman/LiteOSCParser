@@ -12,7 +12,7 @@ test(match_full_exact) {
   for (size_t i = 0; i < sizeof(buf); i++) {
     assertEqual(osc.getMessageBuf()[i], buf[i]);
   }
-  assertEqual(osc.getAddressLength(), 2);
+  assertEqual(osc.getAddress(), "/a");
   assertEqual(osc.getArgCount(), 0);
   assertTrue(osc.fullMatch(0, "/a"));
   assertTrue(osc.fullMatch(0, "/a"));
@@ -26,7 +26,7 @@ test(match_partial_complete) {
   for (size_t i = 0; i < sizeof(buf); i++) {
     assertEqual(osc.getMessageBuf()[i], buf[i]);
   }
-  assertEqual(osc.getAddressLength(), 2);
+  assertEqual(osc.getAddress(), "/a");
   assertEqual(osc.getArgCount(), 0);
   assertEqual(osc.match(0, "/a"), 2);
 }
@@ -38,7 +38,7 @@ test(match_partial) {
   for (size_t i = 0; i < sizeof(buf); i++) {
     assertEqual(osc.getMessageBuf()[i], buf[i]);
   }
-  assertEqual(osc.getAddressLength(), 3);
+  assertEqual(osc.getAddress(), "/a/");
   assertEqual(osc.getArgCount(), 0);
   assertEqual(osc.match(0, "/a"), 2);
 }
@@ -50,7 +50,7 @@ test(match_partial_mismatch) {
   for (size_t i = 0; i < sizeof(buf); i++) {
     assertEqual(osc.getMessageBuf()[i], buf[i]);
   }
-  assertEqual(osc.getAddressLength(), 3);
+  assertEqual(osc.getAddress(), "/ab");
   assertEqual(osc.getArgCount(), 0);
   assertEqual(osc.match(0, "/a"), 0);
 }
@@ -62,7 +62,7 @@ test(match_partial_twice) {
   for (size_t i = 0; i < sizeof(buf); i++) {
     assertEqual(osc.getMessageBuf()[i], buf[i]);
   }
-  assertEqual(osc.getAddressLength(), 4);
+  assertEqual(osc.getAddress(), "/a/b");
   assertEqual(osc.getArgCount(), 0);
   assertEqual(osc.match(0, "/a"), 2);
   assertEqual(osc.match(2, "/b"), 4);

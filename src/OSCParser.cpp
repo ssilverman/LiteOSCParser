@@ -351,9 +351,8 @@ bool OSCParser::strcmploc(const char *s1, const char *s2, int *loc) {
 //  Getters
 // --------------------------------------------------------------------------
 
-void OSCParser::getAddress(char *buf) const {
-  memcpy(buf, &buf_[0], addressLen_);
-  buf[addressLen_] = '\0';
+const char *OSCParser::getAddress() const {
+  return reinterpret_cast<char*>(&buf_[0]);
 }
 
 int32_t OSCParser::getInt(int index) const {
