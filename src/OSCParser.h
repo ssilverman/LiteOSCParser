@@ -9,6 +9,9 @@
 #include <cstddef>
 #include <cstdint>
 
+namespace qindesign {
+namespace osc {
+
 // OSCParser parses and constructs OSC messages. The internal buffer
 // and argument list can be either dynamically allocated or set to a
 // specific size. Any functions that add to, initialize, or change the
@@ -306,5 +309,8 @@ class OSCParser {
   int argIndexesCapacity_;
   bool dynamicArgIndexes_;
 };
+
+}  // namespace osc
+}  // namespace qindesign
 
 #endif  // OSCPARSER_H_

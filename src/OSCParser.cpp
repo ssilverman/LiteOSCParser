@@ -10,6 +10,9 @@
 // Other includes
 #include <Arduino.h>
 
+namespace qindesign {
+namespace osc {
+
 OSCParser::OSCParser(int bufCapacity, int maxArgCount)
     : buf_(nullptr),
       bufSize_(0),
@@ -529,3 +532,6 @@ int OSCParser::parseArgs(const uint8_t *buf, int off, int len) {
   }
   return off;
 }
+
+}  // namespace osc
+}  // namespace qindesign

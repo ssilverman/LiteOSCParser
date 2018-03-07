@@ -6,7 +6,7 @@
 // --------------------------------------------------------------------------
 
 test(memory_too_many_args) {
-  OSCParser osc{32, 1};
+  ::qindesign::osc::OSCParser osc{32, 1};
   const uint8_t b1[12]{ '/', 'a', '\0', 0, ',', 'i', '\0', 0,
                         0x01, 0x02, 0x03, 0x04 };
   assertTrue(osc.parse(b1, sizeof(b1)));
@@ -19,7 +19,7 @@ test(memory_too_many_args) {
 }
 
 test(memory_dynamic_args) {
-  OSCParser osc{32, 0};
+  ::qindesign::osc::OSCParser osc{32, 0};
   const uint8_t b1[12]{ '/', 'a', '\0', 0, ',', 'i', '\0', 0,
                         0x01, 0x02, 0x03, 0x04 };
   assertTrue(osc.parse(b1, sizeof(b1)));
@@ -32,7 +32,7 @@ test(memory_dynamic_args) {
 }
 
 test(memory_buf_too_small) {
-  OSCParser osc{8, 3};
+  ::qindesign::osc::OSCParser osc{8, 3};
   const uint8_t buf[8]{ '/', 'a', '\0', 0, ',', 'T', '\0', 0 };
   assertTrue(osc.parse(buf, sizeof(buf)));
   assertFalse(osc.isMemoryError());
@@ -51,7 +51,7 @@ test(memory_buf_too_small) {
 }
 
 test(memory_dynamic_buf) {
-  OSCParser osc{0, 3};
+  ::qindesign::osc::OSCParser osc{0, 3};
   const uint8_t buf[8]{ '/', 'a', '\0', 0, ',', 'T', '\0', 0 };
   assertTrue(osc.parse(buf, sizeof(buf)));
   assertFalse(osc.isMemoryError());

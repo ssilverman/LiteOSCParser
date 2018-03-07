@@ -11,7 +11,7 @@
 // Project includes
 #include "OSCParser.h"
 
-OSCParser osc{64, 4};
+::qindesign::osc::OSCParser osc{64, 4};
 
 #ifdef __cplusplus
 extern "C" {
