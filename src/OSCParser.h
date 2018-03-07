@@ -213,7 +213,12 @@ class OSCParser {
 
   // Gets the 64-bit OSC-timetag at the given index. This will return zero
   // if the index is out of range or if the argument is the wrong type.
-  int64_t getTime(int index) const;
+  //
+  // The format is the representation used by NTP time stamps, where the
+  // top 32 bits are the number of seconds and the bottom 32 bits are the
+  // fractional part.
+  // See RFC 1305 (NTP) and RFC 2030 (SNTP).
+  uint64_t getTime(int index) const;
 
   // Gets the 64-bit double at the given index. This will return zero
   // if the index is out of range or if the argument is the wrong type.

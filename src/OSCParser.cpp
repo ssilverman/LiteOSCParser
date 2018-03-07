@@ -401,7 +401,7 @@ int64_t OSCParser::getLong(int index) const {
   return getLong(&buf_[argIndexes_[index]]);
 }
 
-int64_t OSCParser::getTime(int index) const {
+uint64_t OSCParser::getTime(int index) const {
   if (!isTime(index)) {
     return 0;
   }
