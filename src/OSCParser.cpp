@@ -51,6 +51,9 @@ OSCParser::~OSCParser() {
 
 bool OSCParser::init(const char *address) {
   memoryErr_ = false;
+  addressLen_ = 0;
+  tagsLen_ = 0;
+  bufSize_ = 0;
 
   int addrLen = strlen(address);
   if (addrLen < 1 || address[0] != '/') {
@@ -235,6 +238,7 @@ bool OSCParser::parse(const uint8_t *buf, int len) {
   memoryErr_ = false;
   addressLen_ = 0;
   tagsLen_ = 0;
+  bufSize_ = 0;
 
   if ((len & 0x03) != 0 || len <= 0) {
     return false;
@@ -252,30 +256,40 @@ bool OSCParser::parse(const uint8_t *buf, int len) {
   addressLen_ = index - 1;
   index = align(index);
 
-  // Copy everything into our local buffer
-  if (!ensureCapacity(len)) {
-    return false;
-  }
-  memcpy(buf_, buf, len);
-
   // Type tags
 
   // No tags
   if (index >= len || buf[index] != ',') {
+    if (!ensureCapacity(index)) {
+      addressLen_ = 0;
+      tagsLen_ = 0;
+      return false;
+    }
+    memcpy(buf_, buf, index);
+
     tagsIndex_ = index;
     tagsLen_ = 0;
-    dataIndex_ = tagsIndex_;
-    bufSize_ = tagsIndex_;
+    dataIndex_ = index;
+    bufSize_ = index;
     return true;
   }
 
   tagsIndex_ = index;
   index = parseString(buf, index, len);
   if (index < 0) {
+    addressLen_ = 0;
+    tagsLen_ = 0;
     return false;
   }
   tagsLen_ = index - 1 - tagsIndex_;
   if (tagsLen_ == 1) {
+    if (!ensureCapacity(tagsIndex_)) {
+      addressLen_ = 0;
+      tagsLen_ = 0;
+      return false;
+    }
+    memcpy(buf_, buf, tagsIndex_);
+
     tagsLen_ = 0;
     dataIndex_ = tagsIndex_;
     bufSize_ = tagsIndex_;
@@ -285,13 +299,24 @@ bool OSCParser::parse(const uint8_t *buf, int len) {
 
   // Args
   if (!ensureArgIndexesCapacity(tagsLen_ - 1)) {
+    addressLen_ = 0;
+    tagsLen_ = 0;
     return false;
   }
   dataIndex_ = index;
   index = parseArgs(buf, index, len);
   if (index < 0) {
+    addressLen_ = 0;
+    tagsLen_ = 0;
     return false;
   }
+
+  if (!ensureCapacity(index)) {
+    addressLen_ = 0;
+    tagsLen_ = 0;
+    return false;
+  }
+  memcpy(buf_, buf, index);
   bufSize_ = index;
 
   return true;

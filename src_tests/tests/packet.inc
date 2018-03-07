@@ -50,3 +50,21 @@ test(packet_args_with_extra_bytes) {
   assertTrue(osc.isInt(0));
   assertEqual(osc.getInt(0), 0x01020304);
 }
+
+test(packet_good_then_bad_size) {
+  uint8_t buf[4]{ '/', 'a', '\0', 0 };
+  assertTrue(osc.parse(buf, sizeof(buf)));
+  assertEqual(osc.getMessageSize(), 4);
+  buf[0] = '#';
+  assertFalse(osc.parse(buf, sizeof(buf)));
+  assertEqual(osc.getMessageSize(), 0);
+}
+
+test(packet_good_then_bad_init_address) {
+  uint8_t buf[4]{ '/', 'a', '\0', 0 };
+  assertTrue(osc.parse(buf, sizeof(buf)));
+  assertEqual(osc.getMessageSize(), 4);
+  buf[0] = '#';
+  assertFalse(osc.init(reinterpret_cast<char*>(buf)));
+  assertEqual(osc.getMessageSize(), 0);
+}

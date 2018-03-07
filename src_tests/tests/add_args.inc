@@ -32,7 +32,7 @@ test(add_int_to_empty_tags) {
   const uint8_t buf[8]{ '/', 'a', '\0', 0, ',', '\0', 0, 0 };
   assertTrue(osc.parse(buf, sizeof(buf)));
   assertEqual(osc.getMessageSize(), 4);
-  for (size_t i = 0; i < sizeof(buf); i++) {
+  for (size_t i = 0; i < 4; i++) {
     assertEqual(osc.getMessageBuf()[i], buf[i]);
   }
   assertEqual(osc.getAddress(), "/a");

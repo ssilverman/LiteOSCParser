@@ -68,3 +68,27 @@ test(memory_dynamic_buf) {
   assertTrue(osc.addBoolean(true));
   assertFalse(osc.isMemoryError());
 }
+
+test(memory_small_buf_and_extra_bytes) {
+  ::qindesign::osc::OSCParser osc{8, 1};
+  uint8_t buf[12]{ '/', 'a', '\0', 0, ',', 'T', '\0', 0, 'x', 0, 0, 0 };
+  assertTrue(osc.parse(buf, sizeof(buf)));
+  assertEqual(osc.getMessageSize(), 8);
+}
+
+test(memory_small_buf_and_empty_args) {
+  ::qindesign::osc::OSCParser osc{4, 0};
+  uint8_t buf[8]{ '/', 'a', '\0', 0, ',', '\0', 0, 0 };
+  assertTrue(osc.parse(buf, sizeof(buf)));
+  assertEqual(osc.getMessageSize(), 4);
+}
+
+test(memory_error_then_bad_packet_no_memory_error) {
+  ::qindesign::osc::OSCParser osc{4, 1};
+  uint8_t buf[8]{ '/', 'a', '\0', 0, ',', 'T', '\0', 0 };
+  assertFalse(osc.parse(buf, sizeof(buf)));
+  assertTrue(osc.isMemoryError());
+  buf[0] = '#';
+  assertFalse(osc.parse(buf, sizeof(buf)));
+  assertFalse(osc.isMemoryError());
+}

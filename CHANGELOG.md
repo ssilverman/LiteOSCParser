@@ -1,4 +1,4 @@
-# Changelog
+# Changelog for LiteOSCParser
 
 This document details the changes between each release.
 
