@@ -155,7 +155,7 @@ bool OSCParser::addArg(char tag, int argSize) {
     newArgCount = tagsLen_;  // Remember, this includes the ','
   }
   if (argIndexesCapacity_ < newArgCount) {
-    argIndexes_ = reinterpret_cast<int *>(
+    argIndexes_ = reinterpret_cast<int*>(
         realloc(argIndexes_, newArgCount * sizeof(int)));
     if (argIndexes_ == nullptr) {
       memoryErr_ = true;
@@ -282,8 +282,8 @@ bool OSCParser::parse(const uint8_t *buf, int len) {
 
   // Args
   if (argIndexesCapacity_ < tagsLen_ - 1) {
-    argIndexes_ = reinterpret_cast<int*>(realloc(argIndexes_,
-                                                 (tagsLen_ - 1)*sizeof(int)));
+    argIndexes_ = reinterpret_cast<int*>(
+        realloc(argIndexes_, (tagsLen_ - 1)*sizeof(int)));
     if (argIndexes_ == nullptr) {
       memoryErr_ = true;
       return false;
@@ -307,7 +307,7 @@ bool OSCParser::fullMatch(int offset, const char *pattern) const {
   if (offset == addressLen_) {
     return strlen(pattern) == 0;
   }
-  return strcmp(reinterpret_cast<char *>(&buf_[offset]), pattern) == 0;
+  return strcmp(reinterpret_cast<char*>(&buf_[offset]), pattern) == 0;
 }
 
 int OSCParser::match(int offset, const char *pattern) const {
@@ -319,7 +319,7 @@ int OSCParser::match(int offset, const char *pattern) const {
   }
 
   int loc;
-  if (strcmploc(reinterpret_cast<char *>(&buf_[offset]), pattern, &loc)) {
+  if (strcmploc(reinterpret_cast<char*>(&buf_[offset]), pattern, &loc)) {
     return addressLen_;
   }
   loc += offset;
@@ -443,7 +443,7 @@ bool OSCParser::ensureCapacity(int size) {
     memoryErr_ = true;
     return false;
   }
-  buf_ = reinterpret_cast<uint8_t *>(realloc(buf_, size));
+  buf_ = reinterpret_cast<uint8_t*>(realloc(buf_, size));
   if (buf_ == nullptr) {
     memoryErr_ = true;
     return false;
