@@ -1,6 +1,7 @@
-# OSCParser
+# LiteOSCParser
 
-This library parses and constructs OSC messages.
+This library parses and constructs OSC messages. It is designed to minimize
+memory usage by providing a way to pre-allocate the internal buffers.
 
 For now, bundles are not supported.
 

@@ -10,12 +10,12 @@
 #include <cstdint>
 
 // OSCParser parses and constructs OSC messages. The internal buffer
-// can be either dynamically allocated or set to a specific size.
-// Any functions that add to, initialize, or change the message return
-// whether they were successul. One of the possible reasons for failure
-// is that there's not enough space in the internal buffer, or more
-// cannot be allocated. The isMemoryError() function can be used to
-// determine this case.
+// and argument list can be either dynamically allocated or set to a
+// specific size. Any functions that add to, initialize, or change the
+// message return whether they were successful. One of the possible
+// reasons for failure is that there's not enough space in one of the
+// internal buffers, and more cannot be allocated. The isMemoryError()
+// function can be used to determine this case.
 //
 // One strategy when creating a message would be to add everything needed
 // and then check for a memory error afterwards, instead of after every
@@ -32,7 +32,7 @@ class OSCParser {
   // limited to that count.
   //
   // The buffer size, bufSize, is given in bytes, and the maximum argument
-  // count, maxArgCount, is given in ints.
+  // count, maxArgCount, is given in ints, i.e. maxArgCount*sizeof(int).
   OSCParser(int bufSize, int maxArgCount);
 
   // Initializes a new OSC parser having dynamic buffer and argument
