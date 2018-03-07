@@ -125,6 +125,20 @@ test(args_one_double) {
   assertEqual(osc.getDouble(0), 1.1);
 }
 
+test(args_one_char) {
+  const uint8_t buf[12]{ '/', 'a', '\0', 0, ',', 'c', '\0', 0,
+                         0x00, 0x00, 0x00, 0x61 };
+  assertTrue(osc.parse(buf, sizeof(buf)));
+  assertEqual(osc.getMessageSize(), static_cast<int>(sizeof(buf)));
+  for (size_t i = 0; i < sizeof(buf); i++) {
+    assertEqual(osc.getMessageBuf()[i], buf[i]);
+  }
+  assertEqual(osc.getAddress(), "/a");
+  assertEqual(osc.getArgCount(), 1);
+  assertTrue(osc.isChar(0));
+  assertEqual(osc.getChar(0), 0x61);
+}
+
 test(args_one_true) {
   const uint8_t buf[8]{ '/', 'a', '\0', 0, ',', 'T', '\0', 0 };
   assertTrue(osc.parse(buf, sizeof(buf)));
@@ -211,4 +225,28 @@ test(args_one_blob) {
   assertTrue(osc.isBlob(0));
   assertEqual(osc.getBlobLength(0), 4);
   assertEqual(reinterpret_cast<const char*>(osc.getBlob(0)), "hi!");
+}
+
+test(args_one_null) {
+  const uint8_t buf[8]{ '/', 'a', '\0', 0, ',', 'N', '\0', 0 };
+  assertTrue(osc.parse(buf, sizeof(buf)));
+  assertEqual(osc.getMessageSize(), static_cast<int>(sizeof(buf)));
+  for (size_t i = 0; i < sizeof(buf); i++) {
+    assertEqual(osc.getMessageBuf()[i], buf[i]);
+  }
+  assertEqual(osc.getAddress(), "/a");
+  assertEqual(osc.getArgCount(), 1);
+  assertTrue(osc.isNull(0));
+}
+
+test(args_one_impulse) {
+  const uint8_t buf[8]{ '/', 'a', '\0', 0, ',', 'I', '\0', 0 };
+  assertTrue(osc.parse(buf, sizeof(buf)));
+  assertEqual(osc.getMessageSize(), static_cast<int>(sizeof(buf)));
+  for (size_t i = 0; i < sizeof(buf); i++) {
+    assertEqual(osc.getMessageBuf()[i], buf[i]);
+  }
+  assertEqual(osc.getAddress(), "/a");
+  assertEqual(osc.getArgCount(), 1);
+  assertTrue(osc.isImpulse(0));
 }

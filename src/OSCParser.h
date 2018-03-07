@@ -154,6 +154,16 @@ class OSCParser {
     return isTag(index, 'f');
   }
 
+  // Checks if the argument at the given index is a string.
+  bool isString(int index) const {
+    return isTag(index, 's');
+  }
+
+  // Checks if the argument at the given index is a blob.
+  bool isBlob(int index) const {
+    return isTag(index, 'b');
+  }
+
   // Checks if the argument at the given index is a 64-bit long.
   bool isLong(int index) const {
     return isTag(index, 'h');
@@ -169,19 +179,24 @@ class OSCParser {
     return isTag(index, 'd');
   }
 
-  // Checks if the argument at the given index is a string.
-  bool isString(int index) const {
-    return isTag(index, 's');
-  }
-
-  // Checks if the argument at the given index is a blob.
-  bool isBlob(int index) const {
-    return isTag(index, 'b');
+  // Checks if the argument at the given index is a char.
+  bool isChar(int index) const {
+    return isTag(index, 'c');
   }
 
   // Checks if the argument at the given index is a boolean.
   bool isBoolean(int index) const {
     return isTag(index, 'T') || isTag(index, 'F');
+  }
+
+  // Checks if the argument at the given index is a null.
+  bool isNull(int index) const {
+    return isTag(index, 'N');
+  }
+
+  // Checks if the argument at the given index is an impulse.
+  bool isImpulse(int index) const {
+    return isTag(index, 'I');
   }
 
   // Gets the 32-bit int at the given index. This will return zero
@@ -203,6 +218,10 @@ class OSCParser {
   // Gets the 64-bit double at the given index. This will return zero
   // if the index is out of range or if the argument is the wrong type.
   double getDouble(int index) const;
+
+  // Gets the 32-bit char at the given index. This will return zero
+  // if the index is out of range or if the argument is the wrong type.
+  int32_t getChar(int index) const;
 
   // Gets a pointer to the string stored at the given index. This returns
   // a pointer into the internal buffer, or nullptr if the index if out

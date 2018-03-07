@@ -369,6 +369,31 @@ float OSCParser::getFloat(int index) const {
   return f;
 }
 
+const char *OSCParser::getString(int index) const {
+  if (!isString(index)) {
+    return nullptr;
+  }
+  return reinterpret_cast<char *>(&buf_[argIndexes_[index]]);
+}
+
+int OSCParser::getBlobLength(int index) const {
+  if (!isBlob(index)) {
+    return 0;
+  }
+  int32_t size = getInt(&buf_[argIndexes_[index]]);
+  if (size < 0) {
+    size = 0;
+  }
+  return size;
+}
+
+const uint8_t *OSCParser::getBlob(int index) const {
+  if (!isBlob(index)) {
+    return nullptr;
+  }
+  return &buf_[argIndexes_[index] + 4];
+}
+
 int64_t OSCParser::getLong(int index) const {
   if (!isLong(index)) {
     return 0;
@@ -393,29 +418,11 @@ double OSCParser::getDouble(int index) const {
   return d;
 }
 
-const char *OSCParser::getString(int index) const {
-  if (!isString(index)) {
-    return nullptr;
-  }
-  return reinterpret_cast<char*>(&buf_[argIndexes_[index]]);
-}
-
-int OSCParser::getBlobLength(int index) const {
-  if (!isBlob(index)) {
+int32_t OSCParser::getChar(int index) const {
+  if (!isChar(index)) {
     return 0;
   }
-  int32_t size = getInt(&buf_[argIndexes_[index]]);
-  if (size < 0) {
-    size = 0;
-  }
-  return size;
-}
-
-const uint8_t *OSCParser::getBlob(int index) const {
-  if (!isBlob(index)) {
-    return nullptr;
-  }
-  return &buf_[argIndexes_[index] + 4];
+  return getInt(&buf_[argIndexes_[index]]);
 }
 
 bool OSCParser::getBoolean(int index) const {
