@@ -135,6 +135,15 @@ class OSCParser {
     return tagsLen_ - 1;
   }
 
+  // Returns the tag for the argument at the given index. This returns
+  // '\0' if the index is out of range.
+  char getTag(int index) const {
+    if (index < 0 || tagsLen_ - 1 <= index) {
+      return '\0';
+    }
+    return buf_[tagsIndex_ + index + 1];
+  }
+
   // Checks if the argument at the given index is a 32-bit int.
   bool isInt(int index) const {
     return isTag(index, 'i');
