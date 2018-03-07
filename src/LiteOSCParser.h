@@ -23,6 +23,9 @@ namespace osc {
 // One strategy when creating a message would be to add everything needed
 // and then check for a memory error afterwards, instead of after every
 // addition.
+//
+// Some of the functions return a pointer to a spot in the internal buffer.
+// Try not to mismanage those. :)
 class LiteOSCParser {
  public:
   // Creates a new OSC parser. The maximum buffer size and argument count
