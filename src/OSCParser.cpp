@@ -10,7 +10,7 @@
 // Other includes
 #include <Arduino.h>
 
-OSCParser::OSCParser(int bufSize)
+OSCParser::OSCParser(int bufCapacity, int maxArgCount)
     : buf_(nullptr),
       bufSize_(0),
       bufCapacity_(0),
@@ -19,11 +19,17 @@ OSCParser::OSCParser(int bufSize)
       addressLen_(0),
       tagsLen_(0),
       argIndexes_(nullptr),
-      argIndexesCapacity_(0) {
-  if (bufSize > 0) {
+      argIndexesCapacity_(0),
+      dynamicArgIndexes_(true) {
+  if (bufCapacity > 0) {
     dynamicBuf_ = false;
-    bufCapacity_ = bufSize;
-    buf_ = reinterpret_cast<uint8_t*>(malloc(bufSize));
+    bufCapacity_ = bufCapacity;
+    buf_ = reinterpret_cast<uint8_t*>(malloc(bufCapacity));
+  }
+  if (maxArgCount > 0) {
+    dynamicArgIndexes_ = false;
+    argIndexesCapacity_ = maxArgCount;
+    argIndexes_ = reinterpret_cast<int*>(malloc(maxArgCount * sizeof(int)));
   }
 }
 
@@ -154,14 +160,8 @@ bool OSCParser::addArg(char tag, int argSize) {
   } else {
     newArgCount = tagsLen_;  // Remember, this includes the ','
   }
-  if (argIndexesCapacity_ < newArgCount) {
-    argIndexes_ = reinterpret_cast<int*>(
-        realloc(argIndexes_, newArgCount * sizeof(int)));
-    if (argIndexes_ == nullptr) {
-      memoryErr_ = true;
-      return false;
-    }
-    argIndexesCapacity_ = newArgCount;
+  if (!ensureArgIndexesCapacity(newArgCount)) {
+    return false;
   }
 
   // Case where there's no tags already
@@ -281,14 +281,8 @@ bool OSCParser::parse(const uint8_t *buf, int len) {
   index = align(index);
 
   // Args
-  if (argIndexesCapacity_ < tagsLen_ - 1) {
-    argIndexes_ = reinterpret_cast<int*>(
-        realloc(argIndexes_, (tagsLen_ - 1)*sizeof(int)));
-    if (argIndexes_ == nullptr) {
-      memoryErr_ = true;
-      return false;
-    }
-    argIndexesCapacity_ = tagsLen_ - 1;
+  if (!ensureArgIndexesCapacity(tagsLen_ - 1)) {
+    return false;
   }
   dataIndex_ = index;
   index = parseArgs(buf, index, len);
@@ -449,6 +443,24 @@ bool OSCParser::ensureCapacity(int size) {
     return false;
   }
   bufCapacity_ = size;
+  return true;
+}
+
+bool OSCParser::ensureArgIndexesCapacity(int size) {
+  if (size <= argIndexesCapacity_) {
+    return true;
+  }
+  if (!dynamicArgIndexes_) {
+    memoryErr_ = true;
+    return false;
+  }
+  argIndexes_ = reinterpret_cast<int*>(
+      realloc(argIndexes_, size * sizeof(int)));
+  if (argIndexes_ == nullptr) {
+    memoryErr_ = true;
+    return false;
+  }
+  argIndexesCapacity_ = size;
   return true;
 }
 

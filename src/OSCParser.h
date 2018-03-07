@@ -22,13 +22,22 @@
 // addition.
 class OSCParser {
  public:
-  // Creates a new OSC parser. The maximum buffer size is given.
-  // If the size is non-positive then it will be dynamically allocated
-  // as needed. The size should be a multiple of four.
-  OSCParser(int bufSize);
+  // Creates a new OSC parser. The maximum buffer size and argument count
+  // is given. If the buffer size is non-positive then the buffer will be
+  // dynamically allocated as needed. The size should be a multiple of four.
+  //
+  // Similarly, if the maximum argument count, maxArgCount, is non-positive,
+  // then the internal array will be dynamically allocated as needed.
+  // Otherwise, the maxmimum number of arguments in a message will be
+  // limited to that count.
+  //
+  // The buffer size, bufSize, is given in bytes, and the maximum argument
+  // count, maxArgCount, is given in ints.
+  OSCParser(int bufSize, int maxArgCount);
 
-  // Initializes a new OSC parser having dynamic buffer allocation.
-  OSCParser() : OSCParser(0) {}
+  // Initializes a new OSC parser having dynamic buffer and argument
+  // allocation.
+  OSCParser() : OSCParser(0, 0) {}
 
   ~OSCParser();
 
@@ -198,6 +207,11 @@ class OSCParser {
   // This does not ensure size is the next multiple of 4.
   bool ensureCapacity(int size);
 
+  // Ensures that we have enough capacity for the argument indexes. This
+  // returns whether we do, allocating if necessary. If there isn't enough
+  // space then the memory error condition will be set to 'true'.
+  bool ensureArgIndexesCapacity(int size);
+
   // Aligns the given number to a multiple of 4.
   static int align(int n) {
     return ((n + 3) >> 2) << 2;
@@ -278,6 +292,7 @@ class OSCParser {
   // Args
   int *argIndexes_;
   int argIndexesCapacity_;
+  bool dynamicArgIndexes_;
 };
 
 #endif  // OSCPARSER_H_
