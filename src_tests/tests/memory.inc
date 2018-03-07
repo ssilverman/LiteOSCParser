@@ -6,7 +6,7 @@
 // --------------------------------------------------------------------------
 
 test(memory_too_many_args) {
-  ::qindesign::osc::OSCParser osc{32, 1};
+  ::qindesign::osc::LiteOSCParser osc{32, 1};
   const uint8_t b1[12]{ '/', 'a', '\0', 0, ',', 'i', '\0', 0,
                         0x01, 0x02, 0x03, 0x04 };
   assertTrue(osc.parse(b1, sizeof(b1)));
@@ -19,7 +19,7 @@ test(memory_too_many_args) {
 }
 
 test(memory_dynamic_args) {
-  ::qindesign::osc::OSCParser osc{32, 0};
+  ::qindesign::osc::LiteOSCParser osc{32, 0};
   const uint8_t b1[12]{ '/', 'a', '\0', 0, ',', 'i', '\0', 0,
                         0x01, 0x02, 0x03, 0x04 };
   assertTrue(osc.parse(b1, sizeof(b1)));
@@ -32,7 +32,7 @@ test(memory_dynamic_args) {
 }
 
 test(memory_buf_too_small) {
-  ::qindesign::osc::OSCParser osc{8, 3};
+  ::qindesign::osc::LiteOSCParser osc{8, 3};
   const uint8_t buf[8]{ '/', 'a', '\0', 0, ',', 'T', '\0', 0 };
   assertTrue(osc.parse(buf, sizeof(buf)));
   assertFalse(osc.isMemoryError());
@@ -51,7 +51,7 @@ test(memory_buf_too_small) {
 }
 
 test(memory_dynamic_buf) {
-  ::qindesign::osc::OSCParser osc{0, 3};
+  ::qindesign::osc::LiteOSCParser osc{0, 3};
   const uint8_t buf[8]{ '/', 'a', '\0', 0, ',', 'T', '\0', 0 };
   assertTrue(osc.parse(buf, sizeof(buf)));
   assertFalse(osc.isMemoryError());
@@ -70,21 +70,21 @@ test(memory_dynamic_buf) {
 }
 
 test(memory_small_buf_and_extra_bytes) {
-  ::qindesign::osc::OSCParser osc{8, 1};
+  ::qindesign::osc::LiteOSCParser osc{8, 1};
   uint8_t buf[12]{ '/', 'a', '\0', 0, ',', 'T', '\0', 0, 'x', 0, 0, 0 };
   assertTrue(osc.parse(buf, sizeof(buf)));
   assertEqual(osc.getMessageSize(), 8);
 }
 
 test(memory_small_buf_and_empty_args) {
-  ::qindesign::osc::OSCParser osc{4, 0};
+  ::qindesign::osc::LiteOSCParser osc{4, 0};
   uint8_t buf[8]{ '/', 'a', '\0', 0, ',', '\0', 0, 0 };
   assertTrue(osc.parse(buf, sizeof(buf)));
   assertEqual(osc.getMessageSize(), 4);
 }
 
 test(memory_error_then_bad_packet_no_memory_error) {
-  ::qindesign::osc::OSCParser osc{4, 1};
+  ::qindesign::osc::LiteOSCParser osc{4, 1};
   uint8_t buf[8]{ '/', 'a', '\0', 0, ',', 'T', '\0', 0 };
   assertFalse(osc.parse(buf, sizeof(buf)));
   assertTrue(osc.isMemoryError());

@@ -1,9 +1,9 @@
-// OSCParser.h defines an OSC processor.
+// LiteOSCParser.h defines an OSC processor.
 // This is part of LiteOSCParser.
 // (c) 2018 Shawn Silverman
 
-#ifndef OSCPARSER_H_
-#define OSCPARSER_H_
+#ifndef LITEOSCPARSER_H_
+#define LITEOSCPARSER_H_
 
 // C++ includes
 #include <cstddef>
@@ -12,7 +12,7 @@
 namespace qindesign {
 namespace osc {
 
-// OSCParser parses and constructs OSC messages. The internal buffer
+// LiteOSCParser parses and constructs OSC messages. The internal buffer
 // and argument list can be either dynamically allocated or set to a
 // specific size. Any functions that add to, initialize, or change the
 // message return whether they were successful. One of the possible
@@ -23,7 +23,7 @@ namespace osc {
 // One strategy when creating a message would be to add everything needed
 // and then check for a memory error afterwards, instead of after every
 // addition.
-class OSCParser {
+class LiteOSCParser {
  public:
   // Creates a new OSC parser. The maximum buffer size and argument count
   // is given. If the buffer size is non-positive then the buffer will be
@@ -36,13 +36,13 @@ class OSCParser {
   //
   // The buffer size, bufSize, is given in bytes, and the maximum argument
   // count, maxArgCount, is given in ints, i.e. maxArgCount*sizeof(int).
-  OSCParser(int bufSize, int maxArgCount);
+  LiteOSCParser(int bufSize, int maxArgCount);
 
   // Initializes a new OSC parser having dynamic buffer and argument
   // allocation.
-  OSCParser() : OSCParser(0, 0) {}
+  LiteOSCParser() : LiteOSCParser(0, 0) {}
 
-  ~OSCParser();
+  ~LiteOSCParser();
 
   // ------------------------------------------------------------------------
   //  Creating
@@ -346,4 +346,4 @@ class OSCParser {
 }  // namespace osc
 }  // namespace qindesign
 
-#endif  // OSCPARSER_H_
+#endif  // LITEOSCPARSER_H_

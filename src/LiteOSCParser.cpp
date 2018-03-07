@@ -1,7 +1,7 @@
-// OSCParser.cpp is part of LiteOSCParser.
+// LiteOSCParser.cpp is part of LiteOSCParser.
 // (c) 2018 Shawn Silverman
 
-#include "OSCParser.h"
+#include "LiteOSCParser.h"
 
 // C++ includes
 #include <cstdlib>
@@ -13,7 +13,7 @@
 namespace qindesign {
 namespace osc {
 
-OSCParser::OSCParser(int bufCapacity, int maxArgCount)
+LiteOSCParser::LiteOSCParser(int bufCapacity, int maxArgCount)
     : buf_(nullptr),
       bufSize_(0),
       bufCapacity_(0),
@@ -36,7 +36,7 @@ OSCParser::OSCParser(int bufCapacity, int maxArgCount)
   }
 }
 
-OSCParser::~OSCParser() {
+LiteOSCParser::~LiteOSCParser() {
   if (buf_ != nullptr) {
     free(buf_);
   }
@@ -49,7 +49,7 @@ OSCParser::~OSCParser() {
 //  Creating
 // --------------------------------------------------------------------------
 
-bool OSCParser::init(const char *address) {
+bool LiteOSCParser::init(const char *address) {
   memoryErr_ = false;
   addressLen_ = 0;
   tagsLen_ = 0;
@@ -71,7 +71,7 @@ bool OSCParser::init(const char *address) {
   return true;
 }
 
-bool OSCParser::addInt(int32_t i) {
+bool LiteOSCParser::addInt(int32_t i) {
   if (!addArg('i', 4)) {
     return false;
   }
@@ -79,7 +79,7 @@ bool OSCParser::addInt(int32_t i) {
   return true;
 }
 
-bool OSCParser::addFloat(float f) {
+bool LiteOSCParser::addFloat(float f) {
   if (!addArg('f', 4)) {
     return false;
   }
@@ -89,7 +89,7 @@ bool OSCParser::addFloat(float f) {
   return true;
 }
 
-bool OSCParser::addLong(int64_t h) {
+bool LiteOSCParser::addLong(int64_t h) {
   if (!addArg('h', 8)) {
     return false;
   }
@@ -97,7 +97,7 @@ bool OSCParser::addLong(int64_t h) {
   return true;
 }
 
-bool OSCParser::addTime(int64_t t) {
+bool LiteOSCParser::addTime(int64_t t) {
   if (!addArg('t', 8)) {
     return false;
   }
@@ -105,7 +105,7 @@ bool OSCParser::addTime(int64_t t) {
   return true;
 }
 
-bool OSCParser::addDouble(double d) {
+bool LiteOSCParser::addDouble(double d) {
   if (!addArg('d', 8)) {
     return false;
   }
@@ -115,11 +115,11 @@ bool OSCParser::addDouble(double d) {
   return true;
 }
 
-bool OSCParser::addBoolean(bool b) {
+bool LiteOSCParser::addBoolean(bool b) {
   return addArg(b ? 'T' : 'F', 0);
 }
 
-bool OSCParser::addString(const char *s) {
+bool LiteOSCParser::addString(const char *s) {
   int len = strlen(s) + 1;
   if (!addArg('s', len)) {
     return false;
@@ -128,7 +128,7 @@ bool OSCParser::addString(const char *s) {
   return true;
 }
 
-bool OSCParser::addBlob(const uint8_t *b, int len) {
+bool LiteOSCParser::addBlob(const uint8_t *b, int len) {
   if (len < 0) {
     return false;
   }
@@ -140,7 +140,7 @@ bool OSCParser::addBlob(const uint8_t *b, int len) {
   return true;
 }
 
-bool OSCParser::addArg(char tag, int argSize) {
+bool LiteOSCParser::addArg(char tag, int argSize) {
   // Ensure argSize is a multiple of 4
   int newArgSize = align(argSize);
   int tagsSize;
@@ -234,7 +234,7 @@ bool OSCParser::addArg(char tag, int argSize) {
 // 2 -> 1
 // 3 -> 0
 
-bool OSCParser::parse(const uint8_t *buf, int len) {
+bool LiteOSCParser::parse(const uint8_t *buf, int len) {
   memoryErr_ = false;
   addressLen_ = 0;
   tagsLen_ = 0;
@@ -322,7 +322,7 @@ bool OSCParser::parse(const uint8_t *buf, int len) {
   return true;
 }
 
-bool OSCParser::fullMatch(int offset, const char *pattern) const {
+bool LiteOSCParser::fullMatch(int offset, const char *pattern) const {
   if (offset < 0 || addressLen_ < offset) {
     return false;
   }
@@ -332,7 +332,7 @@ bool OSCParser::fullMatch(int offset, const char *pattern) const {
   return strcmp(reinterpret_cast<char*>(&buf_[offset]), pattern) == 0;
 }
 
-int OSCParser::match(int offset, const char *pattern) const {
+int LiteOSCParser::match(int offset, const char *pattern) const {
   if (offset < 0 || addressLen_ < offset) {
     return -1;
   }
@@ -357,7 +357,7 @@ int OSCParser::match(int offset, const char *pattern) const {
   return 0;
 }
 
-bool OSCParser::strcmploc(const char *s1, const char *s2, int *loc) {
+bool LiteOSCParser::strcmploc(const char *s1, const char *s2, int *loc) {
   int count = 0;
   while (*s1 == *(s2++)) {
     if (*(s1++) == '\0') {
@@ -373,18 +373,18 @@ bool OSCParser::strcmploc(const char *s1, const char *s2, int *loc) {
 //  Getters
 // --------------------------------------------------------------------------
 
-const char *OSCParser::getAddress() const {
+const char *LiteOSCParser::getAddress() const {
   return reinterpret_cast<char*>(&buf_[0]);
 }
 
-int32_t OSCParser::getInt(int index) const {
+int32_t LiteOSCParser::getInt(int index) const {
   if (!isInt(index)) {
     return 0;
   }
   return getInt(&buf_[argIndexes_[index]]);
 }
 
-float OSCParser::getFloat(int index) const {
+float LiteOSCParser::getFloat(int index) const {
   if (!isFloat(index)) {
     return 0.0f;
   }
@@ -394,14 +394,14 @@ float OSCParser::getFloat(int index) const {
   return f;
 }
 
-const char *OSCParser::getString(int index) const {
+const char *LiteOSCParser::getString(int index) const {
   if (!isString(index)) {
     return nullptr;
   }
   return reinterpret_cast<char *>(&buf_[argIndexes_[index]]);
 }
 
-int OSCParser::getBlobLength(int index) const {
+int LiteOSCParser::getBlobLength(int index) const {
   if (!isBlob(index)) {
     return 0;
   }
@@ -412,28 +412,28 @@ int OSCParser::getBlobLength(int index) const {
   return size;
 }
 
-const uint8_t *OSCParser::getBlob(int index) const {
+const uint8_t *LiteOSCParser::getBlob(int index) const {
   if (!isBlob(index)) {
     return nullptr;
   }
   return &buf_[argIndexes_[index] + 4];
 }
 
-int64_t OSCParser::getLong(int index) const {
+int64_t LiteOSCParser::getLong(int index) const {
   if (!isLong(index)) {
     return 0;
   }
   return getLong(&buf_[argIndexes_[index]]);
 }
 
-uint64_t OSCParser::getTime(int index) const {
+uint64_t LiteOSCParser::getTime(int index) const {
   if (!isTime(index)) {
     return 0;
   }
   return getLong(&buf_[argIndexes_[index]]);
 }
 
-double OSCParser::getDouble(int index) const {
+double LiteOSCParser::getDouble(int index) const {
   if (!isDouble(index)) {
     return 0.0;
   }
@@ -443,14 +443,14 @@ double OSCParser::getDouble(int index) const {
   return d;
 }
 
-int32_t OSCParser::getChar(int index) const {
+int32_t LiteOSCParser::getChar(int index) const {
   if (!isChar(index)) {
     return 0;
   }
   return getInt(&buf_[argIndexes_[index]]);
 }
 
-bool OSCParser::getBoolean(int index) const {
+bool LiteOSCParser::getBoolean(int index) const {
   if (!isBoolean(index)) {
     return false;
   }
@@ -461,7 +461,7 @@ bool OSCParser::getBoolean(int index) const {
 //  Private functions
 // --------------------------------------------------------------------------
 
-bool OSCParser::ensureCapacity(int size) {
+bool LiteOSCParser::ensureCapacity(int size) {
   // // Ensure there's a multiple of 4 bytes
   // size = ((size + 3)>>2)<<2;
 
@@ -481,7 +481,7 @@ bool OSCParser::ensureCapacity(int size) {
   return true;
 }
 
-bool OSCParser::ensureArgIndexesCapacity(int size) {
+bool LiteOSCParser::ensureArgIndexesCapacity(int size) {
   if (size <= argIndexesCapacity_) {
     return true;
   }
@@ -499,7 +499,7 @@ bool OSCParser::ensureArgIndexesCapacity(int size) {
   return true;
 }
 
-int OSCParser::parseString(const uint8_t *buf, int off, int len) {
+int LiteOSCParser::parseString(const uint8_t *buf, int off, int len) {
   while (buf[off++] != 0) {
     if (off >= len) {
       return -1;
@@ -508,7 +508,7 @@ int OSCParser::parseString(const uint8_t *buf, int off, int len) {
   return off;
 }
 
-int OSCParser::parseArgs(const uint8_t *buf, int off, int len) {
+int LiteOSCParser::parseArgs(const uint8_t *buf, int off, int len) {
   for (int i = 0; i < tagsLen_ - 1; i++) {
     argIndexes_[i] = off;
     switch (buf[i + tagsIndex_ + 1]) {

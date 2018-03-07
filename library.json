@@ -1,5 +1,5 @@
 {
-  "name": "OSCParser",
+  "name": "LiteOSCParser",
   "description": "An OSC processing library.",
   "keywords": "osc, structured-data, arduino, teensy",
   "authors": {

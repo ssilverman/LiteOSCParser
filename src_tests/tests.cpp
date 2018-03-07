@@ -9,9 +9,9 @@
 #include <ArduinoUnit.h>
 
 // Project includes
-#include "OSCParser.h"
+#include "LiteOSCParser.h"
 
-::qindesign::osc::OSCParser osc{64, 4};
+::qindesign::osc::LiteOSCParser osc{64, 4};
 
 #ifdef __cplusplus
 extern "C" {
