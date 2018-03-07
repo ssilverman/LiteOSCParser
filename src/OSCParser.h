@@ -254,7 +254,7 @@ class OSCParser {
 
   // Checks if the index is in range and the tag matches.
   bool isTag(int index, char tag) const {
-    return (0 <= index && index < tagsLen_) &&
+    return (0 <= index && index < tagsLen_ - 1) &&
            buf_[tagsIndex_ + index + 1] == tag;
   }
 
