@@ -7,6 +7,158 @@
 #include <cstdlib>
 #include <cstring>
 
+// Other includes
+#include <Arduino.h>
+
+OSCParser::OSCParser(int bufSize)
+    : buf_(nullptr),
+      bufSize_(0),
+      bufCapacity_(0),
+      dynamicBuf_(true),
+      memoryErr_(false),
+      addressLen_(0),
+      tagsLen_(0),
+      argIndexes_(nullptr),
+      argIndexesCapacity_(0) {
+  if (bufSize > 0) {
+    dynamicBuf_ = false;
+    bufCapacity_ = bufSize;
+    buf_ = reinterpret_cast<uint8_t*>(malloc(bufSize));
+  }
+}
+
+OSCParser::~OSCParser() {
+  if (buf_ != nullptr) {
+    free(buf_);
+  }
+  if (argIndexes_ != nullptr) {
+    free(argIndexes_);
+  }
+}
+
+// --------------------------------------------------------------------------
+//  Creating
+// --------------------------------------------------------------------------
+
+bool OSCParser::init(const char *address) {
+  memoryErr_ = false;
+
+  int addrLen = strlen(address);
+  if (addrLen < 1 || address[0] != '/') {
+    return false;
+  }
+
+  int newSize = align(addrLen + 1);
+  if (!ensureCapacity(newSize)) {
+    return false;
+  }
+  strcpy(reinterpret_cast<char*>(buf_), address);
+  addressLen_ = addrLen;
+  tagsLen_ = 0;
+  bufSize_ = newSize;
+  return true;
+}
+
+bool OSCParser::addInt(int32_t i) {
+  if (!addArg('i', 4)) {
+    return false;
+  }
+  setInt(&buf_[bufSize_ - 4], i);
+  return true;
+}
+
+bool OSCParser::addFloat(float f) {
+  if (!addArg('f', 4)) {
+    return false;
+  }
+  int i;
+  memcpy(&i, &f, 4);
+  setInt(&buf_[bufSize_ - 4], i);
+  return true;
+}
+
+bool OSCParser::addArg(char tag, int argSize) {
+  // Ensure argSize is a multiple of 4
+  int newArgSize = align(argSize);
+  int tagsSize;
+  int newTagsSize;
+  if (tagsLen_ == 0) {
+    tagsSize = 0;
+    newTagsSize = 4;
+  } else {
+    tagsSize = align(tagsLen_ + 1);  // Includes the NULL
+    newTagsSize = align(tagsLen_ + 2);  // Plus new tag
+  }
+  int newSize = bufSize_ + (newTagsSize - tagsSize) +  newArgSize;
+  if (!ensureCapacity(newSize)) {
+    return false;
+  }
+  // Serial.printf("bufSize=%d newSize=%d tagsSize=%d newTagsSize=%d argSize=%d newArgSize=%d\n",
+  //               bufSize_, newSize, tagsSize, newTagsSize, argSize, newArgSize);
+
+  // Possibly allocate more space for the argument indexes
+  int newArgCount;
+  if (tagsLen_ == 0) {
+    newArgCount = 1;
+  } else {
+    newArgCount = tagsLen_;  // Remember, this includes the ','
+  }
+  if (argIndexesCapacity_ < newArgCount) {
+    argIndexes_ = reinterpret_cast<int *>(
+        realloc(argIndexes_, newArgCount * sizeof(int)));
+    if (argIndexes_ == nullptr) {
+      memoryErr_ = true;
+      return false;
+    }
+    argIndexesCapacity_ = newArgCount;
+  }
+
+  // Case where there's no tags already
+  if (tagsLen_ == 0) {
+    buf_[bufSize_ + 0] = ',';
+    buf_[bufSize_ + 1] = tag;
+    buf_[bufSize_ + 2] = '\0';
+    buf_[bufSize_ + 3] = 0;
+    tagsIndex_ = bufSize_;
+    tagsLen_ = 2;
+    dataIndex_ = tagsIndex_ + 4;
+    bufSize_ = newSize;
+    argIndexes_[0] = dataIndex_;
+    return true;
+  }
+
+  // If the tags are resized then shift everything
+  // Remember to include the ',' and the NULL terminators
+  int delta = newTagsSize - tagsSize;
+  if (delta > 0) {
+    memmove(&buf_[dataIndex_ + delta],
+            &buf_[dataIndex_],
+            bufSize_ - dataIndex_);
+    memset(&buf_[tagsIndex_ + tagsSize], 0, delta);
+    dataIndex_ += delta;
+    bufSize_ += delta;
+    for (int i = 0; i < newArgCount - 1; i++) {
+      argIndexes_[i] += delta;
+    }
+  }
+  argIndexes_[newArgCount - 1] = bufSize_;
+
+  buf_[tagsIndex_ + tagsLen_] = tag;
+  tagsLen_++;
+  buf_[tagsIndex_ + tagsLen_] = '\0';
+
+  // Now set any extra zeros in the data area
+  delta = newArgSize - argSize;
+  memset(&buf_[bufSize_ + argSize], 0, delta);
+  bufSize_ += newArgSize;
+
+  return true;
+}
+
+// --------------------------------------------------------------------------
+//  Parsing and matching
+// --------------------------------------------------------------------------
+
 // Notes: Alignment calculation
 // Everything will lie on a 4-byte boundary.
 // Index mod 4 -> Skip:
@@ -21,6 +173,7 @@
 // 3 -> 0
 
 bool OSCParser::parse(const uint8_t *buf, int len) {
+  memoryErr_ = false;
   addressLen_ = 0;
   tagsLen_ = 0;
 
@@ -28,55 +181,61 @@ bool OSCParser::parse(const uint8_t *buf, int len) {
     return false;
   }
 
-  int index = 0;
-
   // Address
-  if (buf[index] != '/') {
+  if (buf[0] != '/') {
     return false;
   }
-  addressIndex_ = index;
-  index = parseString(buf, index, len);
+  // Address is at index 0
+  int index = parseString(buf, 0, len);
   if (index < 0) {
     return false;
   }
-  addressLen_ = index - 1 - addressIndex_;
-  index = alignOffset(index);
+  addressLen_ = index - 1;
+  index = align(index);
 
   // Copy everything into our local buffer
-  if (bufSize_ < len) {
-    buf_ = reinterpret_cast<uint8_t*>(realloc(buf_, len));
-    if (buf_ == nullptr) {
-      return false;
-    }
+  if (!ensureCapacity(len)) {
+    return false;
   }
   memcpy(buf_, buf, len);
+  bufSize_ = len;
 
   // Type tags
 
   // No tags
   if (index >= len || buf[index] != ',') {
+    tagsIndex_ = index;
+    tagsLen_ = 0;
+    dataIndex_ = tagsIndex_;
+    bufSize_ = tagsIndex_;
     return true;
   }
 
-  tagsIndex_ = index + 1;
+  tagsIndex_ = index;
   index = parseString(buf, index, len);
   if (index < 0) {
     return false;
   }
   tagsLen_ = index - 1 - tagsIndex_;
-  if (tagsLen_ == 0) {
+  if (tagsLen_ == 1) {
+    tagsLen_ = 0;
+    dataIndex_ = tagsIndex_;
+    bufSize_ = tagsIndex_;
     return true;
   }
-  index = alignOffset(index);
+  index = align(index);
 
   // Args
-  if (argIndexesSize_ < tagsLen_) {
+  if (argIndexesCapacity_ < tagsLen_ - 1) {
     argIndexes_ = reinterpret_cast<int*>(realloc(argIndexes_,
-                                                 tagsLen_ * sizeof(int)));
+                                                 (tagsLen_ - 1)*sizeof(int)));
     if (argIndexes_ == nullptr) {
+      memoryErr_ = true;
       return false;
     }
+    argIndexesCapacity_ = tagsLen_ - 1;
   }
+  dataIndex_ = index;
   index = parseArgs(buf, index, len);
   if (index < 0) {
     return false;
@@ -92,8 +251,7 @@ bool OSCParser::fullMatch(int offset, const char *pattern) const {
   if (offset == addressLen_) {
     return strlen(pattern) == 0;
   }
-  return strcmp(reinterpret_cast<char *>(&buf_[addressIndex_ + offset]),
-                pattern) == 0;
+  return strcmp(reinterpret_cast<char *>(&buf_[offset]), pattern) == 0;
 }
 
 int OSCParser::match(int offset, const char *pattern) const {
@@ -105,8 +263,7 @@ int OSCParser::match(int offset, const char *pattern) const {
   }
 
   int loc;
-  if (strcmploc(reinterpret_cast<char *>(&buf_[addressIndex_ + offset]),
-                pattern, &loc)) {
+  if (strcmploc(reinterpret_cast<char *>(&buf_[offset]), pattern, &loc)) {
     return addressLen_;
   }
   loc += offset;
@@ -115,7 +272,7 @@ int OSCParser::match(int offset, const char *pattern) const {
   // Strictly speaking, we don't need to check if loc is in range
   // because one past the end is the NULL terminator, and that's
   // valid memory
-  if (buf_[addressIndex_ + loc] == '/') {
+  if (buf_[loc] == '/') {
     return loc;
   }
 
@@ -139,7 +296,7 @@ bool OSCParser::strcmploc(const char *s1, const char *s2, int *loc) {
 // --------------------------------------------------------------------------
 
 void OSCParser::getAddress(char *buf) const {
-  memcpy(buf, &buf_[addressIndex_], addressLen_);
+  memcpy(buf, &buf_[0], addressLen_);
   buf[addressLen_] = '\0';
 }
 
@@ -223,12 +380,32 @@ bool OSCParser::getBoolean(int index) const {
   if (!isBoolean(index)) {
     return false;
   }
-  return buf_[tagsIndex_ + index] == 'T';
+  return buf_[tagsIndex_ + 1 + index] == 'T';
 }
 
 // --------------------------------------------------------------------------
 //  Private functions
 // --------------------------------------------------------------------------
+
+bool OSCParser::ensureCapacity(int size) {
+  // // Ensure there's a multiple of 4 bytes
+  // size = ((size + 3)>>2)<<2;
+
+  if (size <= bufCapacity_) {
+    return true;
+  }
+  if (!dynamicBuf_) {
+    memoryErr_ = true;
+    return false;
+  }
+  buf_ = reinterpret_cast<uint8_t *>(realloc(buf_, size));
+  if (buf_ == nullptr) {
+    memoryErr_ = true;
+    return false;
+  }
+  bufCapacity_ = size;
+  return true;
+}
 
 int OSCParser::parseString(const uint8_t *buf, int off, int len) {
   while (buf[off++] != 0) {
@@ -240,9 +417,9 @@ int OSCParser::parseString(const uint8_t *buf, int off, int len) {
 }
 
 int OSCParser::parseArgs(const uint8_t *buf, int off, int len) {
-  for (int i = 0; i < tagsLen_; i++) {
+  for (int i = 0; i < tagsLen_ - 1; i++) {
     argIndexes_[i] = off;
-    switch (buf[i + tagsIndex_]) {
+    switch (buf[i + tagsIndex_ + 1]) {
       case 'i':  // int32
       case 'f':  // float32
       case 'c':  // char
@@ -263,7 +440,7 @@ int OSCParser::parseArgs(const uint8_t *buf, int off, int len) {
         if (off < 0) {
           return -1;
         }
-        off = alignOffset(off);
+        off = align(off);
         break;
 
       case 'b': {  // OSC-blob
@@ -274,7 +451,7 @@ int OSCParser::parseArgs(const uint8_t *buf, int off, int len) {
         if (size < 0) {
           return -1;
         }
-        off = alignOffset(off + 4 + size);
+        off = align(off + 4 + size);
         break;
       }
 

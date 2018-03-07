@@ -6,18 +6,64 @@
 #define OSCPARSER_H_
 
 // C++ includes
+#include <cstddef>
 #include <cstdint>
 
+// OSCParser parses and constructs OSC messages. The internal buffer
+// can be either dynamically allocated or set to a specific size.
+// Any functions that add to, initialize, or change the message return
+// whether they were successul. One of the possible reasons for failure
+// is that there's not enough space in the internal buffer, or more
+// cannot be allocated. The isMemoryError() function can be used to
+// determine this case.
+//
+// One strategy when creating a message would be to add everything needed
+// and then check for a memory error afterwards, instead of after every
+// addition.
 class OSCParser {
  public:
-  OSCParser()
-      : buf_(nullptr),
-        bufSize_(0),
-        argIndexes_(nullptr),
-        argIndexesSize_(0) {}
-  ~OSCParser() = default;
+  // Creates a new OSC parser. The maximum buffer size is given.
+  // If the size is non-positive then it will be dynamically allocated
+  // as needed. The size should be a multiple of four.
+  OSCParser(int bufSize);
 
-  // Parses the given buffer.
+  // Initializes a new OSC parser having dynamic buffer allocation.
+  OSCParser() : OSCParser(0) {}
+
+  ~OSCParser();
+
+  // Initializes the message with a new address and no arguments. This
+  // returns whether the initialization was successful. This will be
+  // unsuccessful if the address does not start with a '/' or if there
+  // isn't enough space in the internal buffer. The second condition can
+  // be checked with a call to isMemoryError().
+  bool init(const char *address);
+
+  // Gets the total size of the encoded message.
+  int getMessageSize() const {
+    return bufSize_;
+  }
+
+  // Gets a pointer to the internal buffer, for sending the data elsewhere.
+  const uint8_t *getMessageBuf() const {
+    return buf_;
+  }
+
+  // Adds an int argument.
+  bool addInt(int32_t i);
+
+  // Adds a float argument.
+  bool addFloat(float f);
+
+  // Returns whether an insufficient buffer size is preventing the latest
+  // message from being constructed.
+  bool isMemoryError() const {
+    return memoryErr_;
+  }
+
+  // Parses the given buffer and returns whether the message is valid.
+  // If this returns 'false' then isMemoryError() can be used to determine
+  // whether the failure was due to not enough space in the internal buffer.
   bool parse(const uint8_t *buf, int len);
 
   // Gets the address length, not including the NULL terminator.
@@ -45,7 +91,10 @@ class OSCParser {
 
   // Returns the current argument count.
   int getArgCount() const {
-    return tagsLen_;
+    if (tagsLen_ == 0) {
+      return 0;
+    }
+    return tagsLen_ - 1;
   }
 
   // Checks if the argument at the given index is a 32-bit int.
@@ -131,6 +180,28 @@ class OSCParser {
   bool getBoolean(int index) const;
 
  private:
+  // Ensures that we have enough buffer capacity. This returns whether
+  // we do, allocating if necessary. If there isn't enough space then
+  // the memory error condition will be set to 'true'.
+  //
+  // This does not ensure size is the next multiple of 4.
+  bool ensureCapacity(int size);
+
+  // Aligns the given number to a multiple of 4.
+  static int align(int n) {
+    return ((n + 3) >> 2) << 2;
+    // return off + ((4 - (off & 0x03)) & 0x03);
+  }
+
+  // Adds one argument having the specified size to the buffer. Things
+  // are shifted around appropriately. This returns whether the addition
+  // was a success. As well, bufSize_ will be set to the correct total size.
+  //
+  // argSize is not expected to be a multiple of 4, but it is sized
+  // internally so that it is. Additionally, any extra allocated bytes
+  // are set to zero.
+  bool addArg(char tag, int argSize);
+
   // Parses a string starting at 'off' and returns the index just past
   // the NULL terminator. This will return a negative value if the end
   // of the string could not be found.
@@ -141,15 +212,10 @@ class OSCParser {
   // if an error is encountered.
   int parseArgs(const uint8_t *buf, int off, int len);
 
-  // Returns an aligned offset, given the current offset.
-  static int alignOffset(int off) {
-    return off + ((4 - (off & 0x03)) & 0x03);
-  }
-
   // Checks if the index is in range and the tag matches.
   bool isTag(int index, char tag) const {
     return (0 <= index && index < tagsLen_) &&
-           buf_[tagsIndex_ + index] == tag;
+           buf_[tagsIndex_ + index + 1] == tag;
   }
 
   // Gets a big-endian-encoded int32 from the given buffer.
@@ -158,6 +224,14 @@ class OSCParser {
            int32_t{*(buf+1)} << 16 |
            int32_t{*(buf+2)} << 8 |
            int32_t{*(buf+3)};
+  }
+
+  // Stores a big-endian-encoded int32 into the given buffer.
+  static void setInt(uint8_t *buf, int32_t i) {
+    *(buf++) = i >> 24;
+    *(buf++) = i >> 16;
+    *(buf++) = i >> 8;
+    *buf     = i;
   }
 
   // Gets a big-endian-encoded int64 from the given buffer.
@@ -173,17 +247,20 @@ class OSCParser {
 
   // Buffer for holding the message
   uint8_t *buf_;
-  int bufSize_;
+  int bufSize_;  // Invariant: bufSize_ % 4 == 0
+  int bufCapacity_;
+  bool dynamicBuf_;
+  bool memoryErr_;
 
   // All the parts
-  int addressIndex_;
   int addressLen_;
-  int tagsIndex_;
-  int tagsLen_;
+  int tagsIndex_;  // Invariant: tagsIndex_ % 4 == 0
+  int tagsLen_;  // Includes the ',' if there are tags, zero otherwise
+  int dataIndex_;  // Invariant: dataIndex_ % 4 == 0
 
   // Args
   int *argIndexes_;
-  int argIndexesSize_;
+  int argIndexesCapacity_;
 };
 
 #endif  // OSCPARSER_H_

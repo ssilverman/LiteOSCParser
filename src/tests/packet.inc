@@ -6,21 +6,21 @@
 // --------------------------------------------------------------------------
 
 test(packet_odd_length) {
-  uint8_t buf[1];
+  const uint8_t buf[1]{0};
   assertFalse(osc.parse(buf, sizeof(buf)));
 }
 
 test(packet_zero_length) {
-  uint8_t buf[0];
+  const uint8_t buf[0]{};
   assertFalse(osc.parse(buf, sizeof(buf)));
 }
 
 test(packet_bad_start) {
-  uint8_t buf[4]{ '#', 0, 0, 0 };
+  const uint8_t buf[4]{ '#', '\0', 0, 0 };
   assertFalse(osc.parse(buf, sizeof(buf)));
 }
 
 test(packet_disallow_bundle) {
-  uint8_t buf[8]{ '#', 'b', 'u', 'n', 'd', 'l', 'e', 0 };
+  const uint8_t buf[8]{ '#', 'b', 'u', 'n', 'd', 'l', 'e', '\0' };
   assertFalse(osc.parse(buf, sizeof(buf)));
 }
