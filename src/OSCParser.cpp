@@ -107,6 +107,27 @@ bool OSCParser::addBoolean(bool b) {
   return addArg(b ? 'T' : 'F', 0);
 }
 
+bool OSCParser::addString(const char *s) {
+  int len = strlen(s) + 1;
+  if (!addArg('s', len)) {
+    return false;
+  }
+  strcpy(reinterpret_cast<char*>(&buf_[bufSize_ - align(len)]), s);
+  return true;
+}
+
+bool OSCParser::addBlob(const uint8_t *b, int len) {
+  if (len < 0) {
+    return false;
+  }
+  if (!addArg('b', len + 4)) {
+    return false;
+  }
+  setInt(&buf_[bufSize_ - align(len + 4)], len);
+  memcpy(&buf_[bufSize_ - align(len + 4) + 4], b, len);
+  return true;
+}
+
 bool OSCParser::addArg(char tag, int argSize) {
   // Ensure argSize is a multiple of 4
   int newArgSize = align(argSize);
@@ -154,6 +175,11 @@ bool OSCParser::addArg(char tag, int argSize) {
     dataIndex_ = tagsIndex_ + 4;
     bufSize_ = newSize;
     argIndexes_[0] = dataIndex_;
+
+    // Now set any extra zeros in the data area
+    int delta = newArgSize - argSize;
+    memset(&buf_[bufSize_ - delta], 0, delta);
+
     return true;
   }
 
@@ -371,20 +397,11 @@ double OSCParser::getDouble(int index) const {
   return d;
 }
 
-int OSCParser::getStringLength(int index) const {
+const char *OSCParser::getString(int index) const {
   if (!isString(index)) {
-    return 0;
+    return nullptr;
   }
-  return strlen(reinterpret_cast<char*>(&buf_[argIndexes_[index]]));
-}
-
-void OSCParser::getString(int index, char *buf) const {
-  int slen = getStringLength(index);
-  if (slen == 0) {
-    return;
-  }
-  memcpy(buf, &buf_[argIndexes_[index]], slen);
-  buf[slen] = '\0';
+  return reinterpret_cast<char*>(&buf_[argIndexes_[index]]);
 }
 
 int OSCParser::getBlobLength(int index) const {
@@ -398,12 +415,11 @@ int OSCParser::getBlobLength(int index) const {
   return size;
 }
 
-void OSCParser::getBlob(int index, uint8_t *buf) const {
-  int blen = getBlobLength(index);
-  if (blen == 0) {
-    return;
+const uint8_t *OSCParser::getBlob(int index) const {
+  if (!isBlob(index)) {
+    return nullptr;
   }
-  memcpy(buf, &buf_[argIndexes_[index] + 4], blen);
+  return &buf_[argIndexes_[index] + 4];
 }
 
 bool OSCParser::getBoolean(int index) const {

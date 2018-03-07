@@ -45,6 +45,7 @@ class OSCParser {
   }
 
   // Gets a pointer to the internal buffer, for sending the data elsewhere.
+  // See getMessageSize() to retrieve the size.
   const uint8_t *getMessageBuf() const {
     return buf_;
   }
@@ -66,6 +67,12 @@ class OSCParser {
 
   // Adds a boolean.
   bool addBoolean(bool b);
+
+  // Adds a string.
+  bool addString(const char *s);
+
+  // Adds a blob having the given length.
+  bool addBlob(const uint8_t *b, int len);
 
   // Returns whether an insufficient buffer size is preventing the latest
   // message from being constructed.
@@ -169,23 +176,20 @@ class OSCParser {
   // if the index is out of range or if the argument is the wrong type.
   double getDouble(int index) const;
 
-  // Gets the string length at the given index. This will return zero
-  // if the index is out of range or if the argument is the wrong type.
-  int getStringLength(int index) const;
-
-  // Gets the string at the given index and stores if in the given buffer.
-  // A NULL terminator will be added always. This will return the string
-  // length actually copied into the buffer, not including the NULL
-  // terminator.
-  void getString(int index, char *buf) const;
+  // Gets a pointer to the string stored at the given index. This returns
+  // a pointer into the internal buffer, or nullptr if the index if out
+  // of range or if the argument is the wrong type.
+  const char *getString(int index) const;
 
   // Gets the blob length at the given index. This will return zero
   // if the index is out of range or if the argument is the wrong type.
   int getBlobLength(int index) const;
 
-  // Gets the blob at the given index and stores if in the given buffer.
-  // This will return the blob length actually copied into the buffer.
-  void getBlob(int index, uint8_t *buf) const;
+  // Gets a pointer to the stored stored at the given index. This returns
+  // a pointer into the internal buffer, or nullptr if the index if out
+  // of range or if the argument is the wrong type. See getBlobLength
+  // to get the blob size.
+  const uint8_t *getBlob(int index) const;
 
   // Gets the boolean value at the given index. This will return false
   // if the index is out of range or if the argument is the wrong type.
