@@ -54,6 +54,13 @@ void __attribute__((naked)) hard_fault_isr() {
 #include "tests/memory.inc"
 #include "tests/packet.inc"
 
-void runTests() {
+void setup() {
+  Serial.begin(9600);
+  while (!Serial && millis() < 2000) {
+  }
+  delay(4000);
+}
+
+void loop() {
   Test::run();
 }
