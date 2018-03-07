@@ -51,6 +51,7 @@ void __attribute__((naked)) hard_fault_isr() {
 #include "tests/address.inc"
 #include "tests/args.inc"
 #include "tests/match.inc"
+#include "tests/memory.inc"
 #include "tests/packet.inc"
 
 void runTests() {
