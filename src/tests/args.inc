@@ -182,3 +182,33 @@ test(args_one_int_one_true) {
   assertTrue(osc.isBoolean(1));
   assertEqual(osc.getBoolean(1), true);
 }
+
+test(args_one_string) {
+  const uint8_t buf[12]{ '/', 'a', '\0', 0, ',', 's', '\0', 0,
+                         'h', 'i', '!', '\0' };
+  assertTrue(osc.parse(buf, sizeof(buf)));
+  assertEqual(osc.getMessageSize(), static_cast<int>(sizeof(buf)));
+  for (size_t i = 0; i < sizeof(buf); i++) {
+    assertEqual(osc.getMessageBuf()[i], buf[i]);
+  }
+  assertEqual(osc.getAddressLength(), 2);
+  assertEqual(osc.getArgCount(), 1);
+  assertTrue(osc.isString(0));
+  assertEqual(osc.getString(0), "hi!");
+}
+
+test(args_one_blob) {
+  const uint8_t buf[16]{ '/', 'a', '\0', 0, ',', 'b', '\0', 0,
+                         0x00, 0x00, 0x00, 0x04,
+                         'h', 'i', '!', '\0' };
+  assertTrue(osc.parse(buf, sizeof(buf)));
+  assertEqual(osc.getMessageSize(), static_cast<int>(sizeof(buf)));
+  for (size_t i = 0; i < sizeof(buf); i++) {
+    assertEqual(osc.getMessageBuf()[i], buf[i]);
+  }
+  assertEqual(osc.getAddressLength(), 2);
+  assertEqual(osc.getArgCount(), 1);
+  assertTrue(osc.isBlob(0));
+  assertEqual(osc.getBlobLength(0), 4);
+  assertEqual(reinterpret_cast<const char*>(osc.getBlob(0)), "hi!");
+}

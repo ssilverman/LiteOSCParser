@@ -254,7 +254,6 @@ bool OSCParser::parse(const uint8_t *buf, int len) {
     return false;
   }
   memcpy(buf_, buf, len);
-  bufSize_ = len;
 
   // Type tags
 
@@ -296,6 +295,7 @@ bool OSCParser::parse(const uint8_t *buf, int len) {
   if (index < 0) {
     return false;
   }
+  bufSize_ = index;
 
   return true;
 }
