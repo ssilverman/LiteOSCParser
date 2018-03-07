@@ -1,4 +1,4 @@
-// OSCParser.cpp is part of OSCParser.
+// OSCParser.cpp is part of LiteOSCParser.
 // (c) 2018 Shawn Silverman
 
 #include "OSCParser.h"

@@ -1,4 +1,4 @@
-// packet.inc is part of OSCParser.
+// packet.inc is part of LiteOSCParser.
 // (c) 2018 Shawn Silverman
 
 // --------------------------------------------------------------------------

@@ -1,4 +1,4 @@
-// address.inc is part of OSCParser.
+// address.inc is part of LiteOSCParser.
 // (c) 2018 Shawn Silverman
 
 // --------------------------------------------------------------------------

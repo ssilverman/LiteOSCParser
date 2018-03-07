@@ -1,4 +1,4 @@
-// match.inc is part of OSCParser.
+// match.inc is part of LiteOSCParser.
 // (c) 2018 Shawn Silverman
 
 // --------------------------------------------------------------------------

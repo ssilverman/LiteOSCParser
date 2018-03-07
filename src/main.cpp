@@ -1,4 +1,4 @@
-// main.cpp is part of OSCParser.
+// main.cpp is part of LiteOSCParser.
 // (c) 2018 Shawn Silverman
 
 // Other includes

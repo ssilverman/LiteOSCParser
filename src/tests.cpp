@@ -1,4 +1,4 @@
-// tests.cpp is part of OSCParser.
+// tests.cpp is part of LiteOSCParser.
 // (c) 2018 Shawn Silverman
 
 // C++ includes

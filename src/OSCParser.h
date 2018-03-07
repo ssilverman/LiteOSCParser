@@ -1,5 +1,5 @@
 // OSCParser.h defines an OSC processor.
-// This is part of the OSCParser library.
+// This is part of LiteOSCParser.
 // (c) 2018 Shawn Silverman
 
 #ifndef OSCPARSER_H_
@@ -40,6 +40,10 @@ class OSCParser {
   OSCParser() : OSCParser(0, 0) {}
 
   ~OSCParser();
+
+  // ------------------------------------------------------------------------
+  //  Creating
+  // ------------------------------------------------------------------------
 
   // Initializes the message with a new address and no arguments. This
   // returns whether the initialization was successful. This will be
@@ -89,14 +93,14 @@ class OSCParser {
     return memoryErr_;
   }
 
+  // ------------------------------------------------------------------------
+  //  Parsing and matching
+  // ------------------------------------------------------------------------
+
   // Parses the given buffer and returns whether the message is valid.
   // If this returns 'false' then isMemoryError() can be used to determine
   // whether the failure was due to not enough space in the internal buffer.
   bool parse(const uint8_t *buf, int len);
-
-  // Gets a pointer to the address. This returns a pointer into the
-  // internal buffer.
-  const char *getAddress() const;
 
   // Returns whether the address fully matches the given pattern,
   // starting at offset in the address.
@@ -111,6 +115,14 @@ class OSCParser {
   // This will return -1 if offset is out of range and zero if there is
   // no match.
   int match(int offset, const char *pattern) const;
+
+  // ------------------------------------------------------------------------
+  //  Getters
+  // ------------------------------------------------------------------------
+
+  // Gets a pointer to the address. This returns a pointer into the
+  // internal buffer.
+  const char *getAddress() const;
 
   // Returns the current argument count.
   int getArgCount() const {

@@ -1,4 +1,4 @@
-// add_args.inc is part of OSCParser.
+// add_args.inc is part of LiteOSCParser.
 // (c) 2018 Shawn Silverman
 
 // --------------------------------------------------------------------------
