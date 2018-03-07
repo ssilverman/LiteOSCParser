@@ -49,11 +49,23 @@ class OSCParser {
     return buf_;
   }
 
-  // Adds an int argument.
+  // Adds a 32-bit int argument.
   bool addInt(int32_t i);
 
-  // Adds a float argument.
+  // Adds a 32-bit float argument.
   bool addFloat(float f);
+
+  // Adds a 64-bit long argument.
+  bool addLong(int64_t h);
+
+  // Adds a 64-bit time argument.
+  bool addTime(int64_t t);
+
+  // Adds a 64-bit double argument.
+  bool addDouble(double d);
+
+  // Adds a boolean.
+  bool addBoolean(bool b);
 
   // Returns whether an insufficient buffer size is preventing the latest
   // message from being constructed.
@@ -237,6 +249,12 @@ class OSCParser {
   // Gets a big-endian-encoded int64 from the given buffer.
   static int64_t getLong(const uint8_t *buf) {
     return (int64_t{getInt(buf)} << 32) | int64_t{getInt(buf + 4)};
+  }
+
+  // Stores a big-endian-encoded int64 into the given buffer.
+  static void setLong(uint8_t *buf, int64_t h) {
+    setInt(buf, h >> 32);
+    setInt(buf + 4, h);
   }
 
   // Similar to strcmp, this returns whether the two strings match, but

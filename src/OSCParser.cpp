@@ -71,10 +71,40 @@ bool OSCParser::addFloat(float f) {
   if (!addArg('f', 4)) {
     return false;
   }
-  int i;
+  int32_t i;
   memcpy(&i, &f, 4);
   setInt(&buf_[bufSize_ - 4], i);
   return true;
+}
+
+bool OSCParser::addLong(int64_t h) {
+  if (!addArg('h', 8)) {
+    return false;
+  }
+  setLong(&buf_[bufSize_ - 8], h);
+  return true;
+}
+
+bool OSCParser::addTime(int64_t t) {
+  if (!addArg('t', 8)) {
+    return false;
+  }
+  setLong(&buf_[bufSize_ - 8], t);
+  return true;
+}
+
+bool OSCParser::addDouble(double d) {
+  if (!addArg('d', 8)) {
+    return false;
+  }
+  int64_t i;
+  memcpy(&i, &d, 8);
+  setLong(&buf_[bufSize_ - 8], i);
+  return true;
+}
+
+bool OSCParser::addBoolean(bool b) {
+  return addArg(b ? 'T' : 'F', 0);
 }
 
 bool OSCParser::addArg(char tag, int argSize) {
