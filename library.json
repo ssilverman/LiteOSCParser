@@ -7,9 +7,13 @@
     "email": "shawn@pobox.com",
     "maintainer": true
   },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ssilverman/LiteOSCParser"
+  },
   "version": "1.0.0",
   "license": "BSD-3-Clause",
-  "homepage": "https://github.com/ssilverman",
+  "homepage": "https://github.com/ssilverman/LiteOSCParser",
   "frameworks": "arduino",
   "platforms": "*"
 }
