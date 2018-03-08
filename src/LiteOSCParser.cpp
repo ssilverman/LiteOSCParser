@@ -65,8 +65,11 @@ bool LiteOSCParser::init(const char *address) {
     return false;
   }
   strcpy(reinterpret_cast<char*>(buf_), address);
+  memset(&buf_[addrLen + 1], 0, newSize - (addrLen + 1));
   addressLen_ = addrLen;
   tagsLen_ = 0;
+  tagsIndex_ = newSize;
+  dataIndex_ = newSize;
   bufSize_ = newSize;
   return true;
 }
@@ -266,6 +269,7 @@ bool LiteOSCParser::parse(const uint8_t *buf, int len) {
       return false;
     }
     memcpy(buf_, buf, index);
+    memset(&buf_[addressLen_ + 1], 0, index - (addressLen_ + 1));
 
     tagsIndex_ = index;
     tagsLen_ = 0;
@@ -289,6 +293,7 @@ bool LiteOSCParser::parse(const uint8_t *buf, int len) {
       return false;
     }
     memcpy(buf_, buf, tagsIndex_);
+    memset(&buf_[addressLen_ + 1], 0, tagsIndex_ - (addressLen_ + 1));
 
     tagsLen_ = 0;
     dataIndex_ = tagsIndex_;
@@ -317,6 +322,9 @@ bool LiteOSCParser::parse(const uint8_t *buf, int len) {
     return false;
   }
   memcpy(buf_, buf, index);
+  memset(&buf_[addressLen_ + 1], 0, tagsIndex_ - (addressLen_ + 1));
+  memset(&buf_[tagsIndex_ + tagsLen_ + 1], 0,
+         dataIndex_ - (tagsIndex_ + tagsLen_ + 1));
   bufSize_ = index;
 
   return true;
