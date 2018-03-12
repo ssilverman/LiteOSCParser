@@ -155,7 +155,7 @@ bool LiteOSCParser::addArg(char tag, int argSize) {
     tagsSize = align(tagsLen_ + 1);  // Include the NULL
     newTagsSize = align(tagsLen_ + 2);  // Plus new tag
   }
-  int newSize = bufSize_ + (newTagsSize - tagsSize) +  newArgSize;
+  int newSize = bufSize_ + (newTagsSize - tagsSize) + newArgSize;
   if (!ensureCapacity(newSize)) {
     return false;
   }
@@ -497,8 +497,8 @@ bool LiteOSCParser::ensureArgIndexesCapacity(int size) {
     memoryErr_ = true;
     return false;
   }
-  argIndexes_ = reinterpret_cast<int*>(
-      realloc(argIndexes_, size * sizeof(int)));
+  argIndexes_ =
+      reinterpret_cast<int *>(realloc(argIndexes_, size * sizeof(int)));
   if (argIndexes_ == nullptr) {
     memoryErr_ = true;
     return false;

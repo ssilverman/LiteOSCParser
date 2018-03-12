@@ -210,6 +210,21 @@ class LiteOSCParser {
   // if the index is out of range or if the argument is the wrong type.
   float getFloat(int index) const;
 
+  // Gets a pointer to the string stored at the given index. This returns
+  // a pointer into the internal buffer, or nullptr if the index if out
+  // of range or if the argument is the wrong type.
+  const char *getString(int index) const;
+
+  // Gets the blob length at the given index. This will return zero
+  // if the index is out of range or if the argument is the wrong type.
+  int getBlobLength(int index) const;
+
+  // Gets a pointer to the stored stored at the given index. This returns
+  // a pointer into the internal buffer, or nullptr if the index if out
+  // of range or if the argument is the wrong type. See getBlobLength
+  // to get the blob size.
+  const uint8_t *getBlob(int index) const;
+
   // Gets the 64-bit long at the given index. This will return zero
   // if the index is out of range or if the argument is the wrong type.
   int64_t getLong(int index) const;
@@ -230,21 +245,6 @@ class LiteOSCParser {
   // Gets the 32-bit char at the given index. This will return zero
   // if the index is out of range or if the argument is the wrong type.
   int32_t getChar(int index) const;
-
-  // Gets a pointer to the string stored at the given index. This returns
-  // a pointer into the internal buffer, or nullptr if the index if out
-  // of range or if the argument is the wrong type.
-  const char *getString(int index) const;
-
-  // Gets the blob length at the given index. This will return zero
-  // if the index is out of range or if the argument is the wrong type.
-  int getBlobLength(int index) const;
-
-  // Gets a pointer to the stored stored at the given index. This returns
-  // a pointer into the internal buffer, or nullptr if the index if out
-  // of range or if the argument is the wrong type. See getBlobLength
-  // to get the blob size.
-  const uint8_t *getBlob(int index) const;
 
   // Gets the boolean value at the given index. This will return false
   // if the index is out of range or if the argument is the wrong type.
