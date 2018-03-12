@@ -75,6 +75,12 @@ class LiteOSCParser {
   // Adds a 32-bit float argument.
   bool addFloat(float f);
 
+  // Adds a string.
+  bool addString(const char *s);
+
+  // Adds a blob having the given length.
+  bool addBlob(const uint8_t *b, int len);
+
   // Adds a 64-bit long argument.
   bool addLong(int64_t h);
 
@@ -86,12 +92,6 @@ class LiteOSCParser {
 
   // Adds a boolean.
   bool addBoolean(bool b);
-
-  // Adds a string.
-  bool addString(const char *s);
-
-  // Adds a blob having the given length.
-  bool addBlob(const uint8_t *b, int len);
 
   // Returns whether an insufficient buffer size is preventing the latest
   // message from being constructed.

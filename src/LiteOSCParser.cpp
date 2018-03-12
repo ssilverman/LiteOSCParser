@@ -92,6 +92,27 @@ bool LiteOSCParser::addFloat(float f) {
   return true;
 }
 
+bool LiteOSCParser::addString(const char *s) {
+  int len = strlen(s) + 1;
+  if (!addArg('s', len)) {
+    return false;
+  }
+  strcpy(reinterpret_cast<char*>(&buf_[bufSize_ - align(len)]), s);
+  return true;
+}
+
+bool LiteOSCParser::addBlob(const uint8_t *b, int len) {
+  if (len < 0) {
+    return false;
+  }
+  if (!addArg('b', len + 4)) {
+    return false;
+  }
+  setInt(&buf_[bufSize_ - align(len + 4)], len);
+  memcpy(&buf_[bufSize_ - align(len + 4) + 4], b, len);
+  return true;
+}
+
 bool LiteOSCParser::addLong(int64_t h) {
   if (!addArg('h', 8)) {
     return false;
@@ -120,27 +141,6 @@ bool LiteOSCParser::addDouble(double d) {
 
 bool LiteOSCParser::addBoolean(bool b) {
   return addArg(b ? 'T' : 'F', 0);
-}
-
-bool LiteOSCParser::addString(const char *s) {
-  int len = strlen(s) + 1;
-  if (!addArg('s', len)) {
-    return false;
-  }
-  strcpy(reinterpret_cast<char*>(&buf_[bufSize_ - align(len)]), s);
-  return true;
-}
-
-bool LiteOSCParser::addBlob(const uint8_t *b, int len) {
-  if (len < 0) {
-    return false;
-  }
-  if (!addArg('b', len + 4)) {
-    return false;
-  }
-  setInt(&buf_[bufSize_ - align(len + 4)], len);
-  memcpy(&buf_[bufSize_ - align(len + 4) + 4], b, len);
-  return true;
 }
 
 bool LiteOSCParser::addArg(char tag, int argSize) {
@@ -406,7 +406,7 @@ const char *LiteOSCParser::getString(int index) const {
   if (!isString(index)) {
     return nullptr;
   }
-  return reinterpret_cast<char *>(&buf_[argIndexes_[index]]);
+  return reinterpret_cast<char*>(&buf_[argIndexes_[index]]);
 }
 
 int LiteOSCParser::getBlobLength(int index) const {
@@ -498,7 +498,7 @@ bool LiteOSCParser::ensureArgIndexesCapacity(int size) {
     return false;
   }
   argIndexes_ =
-      reinterpret_cast<int *>(realloc(argIndexes_, size * sizeof(int)));
+      reinterpret_cast<int*>(realloc(argIndexes_, size * sizeof(int)));
   if (argIndexes_ == nullptr) {
     memoryErr_ = true;
     return false;
