@@ -92,3 +92,22 @@ test(memory_error_then_bad_packet_no_memory_error) {
   assertFalse(osc.parse(buf, sizeof(buf)));
   assertFalse(osc.isMemoryError());
 }
+
+test(memory_reused_address_remainder_is_zero) {
+  uint8_t buf[8]{ '/', 'a', 'b', 'c', 'd', 'e', 'f', '\0' };
+  assertTrue(osc.parse(buf, sizeof(buf)));
+  assertFalse(osc.isMemoryError());
+  assertEqual(osc.getAddress(), "/abcdef");
+  assertEqual(osc.getMessageSize(), 8);
+
+  buf[4] = '\0';
+  assertTrue(osc.parse(buf, sizeof(buf)));
+  assertFalse(osc.isMemoryError());
+  assertEqual(osc.getAddress(), "/abc");
+
+  const char b2[8]{ '/', 'a', 'b', 'c', '\0', 0, 0, 0 };
+  assertEqual(osc.getMessageSize(), static_cast<int>(sizeof(b2)));
+  for (size_t i = 0; i < sizeof(b2); i++) {
+    assertEqual(osc.getMessageBuf()[i], b2[i]);
+  }
+}

@@ -146,13 +146,13 @@ bool LiteOSCParser::addBlob(const uint8_t *b, int len) {
 bool LiteOSCParser::addArg(char tag, int argSize) {
   // Ensure argSize is a multiple of 4
   int newArgSize = align(argSize);
-  int tagsSize;
+  int tagsSize;  // Includes the NULL
   int newTagsSize;
   if (tagsLen_ == 0) {
     tagsSize = 0;
     newTagsSize = 4;
   } else {
-    tagsSize = align(tagsLen_ + 1);  // Includes the NULL
+    tagsSize = align(tagsLen_ + 1);  // Include the NULL
     newTagsSize = align(tagsLen_ + 2);  // Plus new tag
   }
   int newSize = bufSize_ + (newTagsSize - tagsSize) +  newArgSize;
