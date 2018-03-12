@@ -50,6 +50,7 @@ void __attribute__((naked)) hard_fault_isr() {
 #include "tests/add_args.inc"
 #include "tests/address.inc"
 #include "tests/args.inc"
+#include "tests/bundle.inc"
 #include "tests/match.inc"
 #include "tests/memory.inc"
 #include "tests/packet.inc"

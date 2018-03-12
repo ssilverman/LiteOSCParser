@@ -26,13 +26,21 @@ LiteOSCParser::LiteOSCParser(int bufCapacity, int maxArgCount)
       dynamicArgIndexes_(true) {
   if (bufCapacity > 0) {
     dynamicBuf_ = false;
-    bufCapacity_ = bufCapacity;
     buf_ = reinterpret_cast<uint8_t*>(malloc(bufCapacity));
+    if (buf_ == nullptr) {
+      memoryErr_ = true;
+    } else {
+      bufCapacity_ = bufCapacity;
+    }
   }
   if (maxArgCount > 0) {
     dynamicArgIndexes_ = false;
-    argIndexesCapacity_ = maxArgCount;
     argIndexes_ = reinterpret_cast<int*>(malloc(maxArgCount * sizeof(int)));
+    if (argIndexes_ == nullptr) {
+      memoryErr_ = true;
+    } else {
+      argIndexesCapacity_ = maxArgCount;
+    }
   }
 }
 

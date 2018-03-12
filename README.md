@@ -3,7 +3,10 @@
 This library parses and constructs OSC messages. It is designed to minimize
 memory usage by providing a way to pre-allocate the internal buffers.
 
-For now, bundles are not supported.
+Bundles are supported via a simple container class, `OSCBundle`.
+
+Both classes, `LiteOSCParser` and `OSCBundle`, are in the `qindesign::osc`
+namespace.
 
 ## Code style
 

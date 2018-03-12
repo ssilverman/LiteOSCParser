@@ -6,7 +6,6 @@
 #define LITEOSCPARSER_H_
 
 // C++ includes
-#include <cstddef>
 #include <cstdint>
 
 namespace qindesign {
@@ -29,7 +28,7 @@ namespace osc {
 class LiteOSCParser {
  public:
   // Creates a new OSC parser. The maximum buffer size and argument count
-  // is given. If the buffer size is non-positive then the buffer will be
+  // are given. If the buffer size is non-positive then the buffer will be
   // dynamically allocated as needed. The size should be a multiple of four.
   //
   // Similarly, if the maximum argument count, maxArgCount, is non-positive,
@@ -44,6 +43,10 @@ class LiteOSCParser {
   // Initializes a new OSC parser having dynamic buffer and argument
   // allocation.
   LiteOSCParser() : LiteOSCParser(0, 0) {}
+
+  // Not copyable
+  LiteOSCParser(const LiteOSCParser &) = delete;
+  LiteOSCParser &operator=(const LiteOSCParser &) = delete;
 
   ~LiteOSCParser();
 
@@ -344,6 +347,84 @@ class LiteOSCParser {
   int *argIndexes_;
   int argIndexesCapacity_;
   bool dynamicArgIndexes_;
+};
+
+// OSCBundle is a container for OSC messages and other OSC bundles.
+// The internal buffer can be either dynamically allocated or set to a
+// specific size. Any functions that add to, initialize, or change the
+// bundle return whether they were successful. One of the possible
+// reasons for failure is that there's not enough space in one of the
+// internal buffers, and more cannot be allocated. The isMemoryError()
+// function can be used to determine this case.
+class OSCBundle {
+ public:
+  // Creates a new OSCBundle. The bundle time and maximum buffer size
+  // are given. If the maximum buffer size is positive and less than 16,
+  // then it will be set to 16. If it is non-positive, however, then the
+  // buffer will be dynamically allocated as needed. It should be a
+  // multiple of four.
+  OSCBundle(int bufCapacity);
+
+  // Creates a new OSCBundle that has a dynamic buffer.
+  OSCBundle() : OSCBundle(0) {}
+
+  // Not copyable
+  OSCBundle(const OSCBundle &) = delete;
+  OSCBundle &operator=(const OSCBundle &) = delete;
+
+  ~OSCBundle();
+
+  // Resets the contents and uses the given time for the bundle.
+  // This also resets the memory error condition.
+  //
+  // This must be called at least once before messages or bundles can
+  // be added.
+  bool init(uint64_t time);
+
+  // Returns the total size of the bundle.
+  int size() const {
+    return bufSize_;
+  }
+
+  // Gets a pointer to the internal buffer, for sending the data elsewhere.
+  // See size() to retrieve the size. Play nice with this pointer.
+  const uint8_t *buf() const {
+    return buf_;
+  }
+
+  // Returns whether an insufficient buffer size is preventing the latest
+  // content from being added.
+  bool isMemoryError() const {
+    return memoryErr_;
+  }
+
+  // Adds an OSC message to this bundle. This will return false if
+  // the message could not be added, either due to init not being
+  // called at least once or insufficient memory.
+  bool addMessage(const LiteOSCParser &osc);
+
+  // Adds another OSC bundle to this bundle. This will return false if
+  // the message could not be added, either due to init not being called
+  // at least once or insufficient memory.
+  bool addBundle(const OSCBundle &bundle);
+
+ private:
+  // Adds content to the bundle. This returns false if init has not
+  // been called at least once.
+  bool add(const uint8_t *buf, int size);
+
+  // Ensures that we have enough buffer capacity. This returns whether
+  // we do, allocating if necessary. If there isn't enough space then
+  // the memory error condition will be set to 'true'.
+  bool ensureCapacity(int size);
+
+  uint8_t *buf_;
+  int bufSize_;
+  int bufCapacity_;
+  bool dynamicBuf_;
+  bool memoryErr_;
+
+  bool isInitted_;
 };
 
 }  // namespace osc
