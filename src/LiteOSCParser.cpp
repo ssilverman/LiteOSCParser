@@ -78,7 +78,7 @@ bool LiteOSCParser::addInt(int32_t i) {
   if (!addArg('i', 4)) {
     return false;
   }
-  setInt(&buf_[bufSize_ - 4], i);
+  setUint(&buf_[bufSize_ - 4], i);
   return true;
 }
 
@@ -86,9 +86,9 @@ bool LiteOSCParser::addFloat(float f) {
   if (!addArg('f', 4)) {
     return false;
   }
-  int32_t i;
-  memcpy(&i, &f, 4);
-  setInt(&buf_[bufSize_ - 4], i);
+  uint32_t u;
+  memcpy(&u, &f, 4);
+  setUint(&buf_[bufSize_ - 4], u);
   return true;
 }
 
@@ -108,7 +108,7 @@ bool LiteOSCParser::addBlob(const uint8_t *b, int len) {
   if (!addArg('b', len + 4)) {
     return false;
   }
-  setInt(&buf_[bufSize_ - align(len + 4)], len);
+  setUint(&buf_[bufSize_ - align(len + 4)], len);
   memcpy(&buf_[bufSize_ - align(len + 4) + 4], b, len);
   return true;
 }
@@ -117,15 +117,15 @@ bool LiteOSCParser::addLong(int64_t h) {
   if (!addArg('h', 8)) {
     return false;
   }
-  setLong(&buf_[bufSize_ - 8], h);
+  setUlong(&buf_[bufSize_ - 8], h);
   return true;
 }
 
-bool LiteOSCParser::addTime(int64_t t) {
+bool LiteOSCParser::addTime(uint64_t t) {
   if (!addArg('t', 8)) {
     return false;
   }
-  setLong(&buf_[bufSize_ - 8], t);
+  setUlong(&buf_[bufSize_ - 8], t);
   return true;
 }
 
@@ -133,9 +133,9 @@ bool LiteOSCParser::addDouble(double d) {
   if (!addArg('d', 8)) {
     return false;
   }
-  int64_t i;
-  memcpy(&i, &d, 8);
-  setLong(&buf_[bufSize_ - 8], i);
+  uint64_t u;
+  memcpy(&u, &d, 8);
+  setUlong(&buf_[bufSize_ - 8], u);
   return true;
 }
 
@@ -389,16 +389,16 @@ int32_t LiteOSCParser::getInt(int index) const {
   if (!isInt(index)) {
     return 0;
   }
-  return getInt(&buf_[argIndexes_[index]]);
+  return getUint(&buf_[argIndexes_[index]]);
 }
 
 float LiteOSCParser::getFloat(int index) const {
   if (!isFloat(index)) {
     return 0.0f;
   }
-  int32_t i = getInt(&buf_[argIndexes_[index]]);
+  uint32_t u = getUint(&buf_[argIndexes_[index]]);
   float f;
-  memcpy(&f, &i, 4);
+  memcpy(&f, &u, 4);
   return f;
 }
 
@@ -413,7 +413,7 @@ int LiteOSCParser::getBlobLength(int index) const {
   if (!isBlob(index)) {
     return 0;
   }
-  int32_t size = getInt(&buf_[argIndexes_[index]]);
+  int32_t size = getUint(&buf_[argIndexes_[index]]);
   if (size < 0) {
     size = 0;
   }
@@ -431,23 +431,23 @@ int64_t LiteOSCParser::getLong(int index) const {
   if (!isLong(index)) {
     return 0;
   }
-  return getLong(&buf_[argIndexes_[index]]);
+  return getUlong(&buf_[argIndexes_[index]]);
 }
 
 uint64_t LiteOSCParser::getTime(int index) const {
   if (!isTime(index)) {
     return 0;
   }
-  return getLong(&buf_[argIndexes_[index]]);
+  return getUlong(&buf_[argIndexes_[index]]);
 }
 
 double LiteOSCParser::getDouble(int index) const {
   if (!isDouble(index)) {
     return 0.0;
   }
-  int64_t i = getLong(&buf_[argIndexes_[index]]);
+  int64_t u = getUlong(&buf_[argIndexes_[index]]);
   double d;
-  memcpy(&d, &i, 8);
+  memcpy(&d, &u, 8);
   return d;
 }
 
@@ -455,7 +455,7 @@ int32_t LiteOSCParser::getChar(int index) const {
   if (!isChar(index)) {
     return 0;
   }
-  return getInt(&buf_[argIndexes_[index]]);
+  return getUint(&buf_[argIndexes_[index]]);
 }
 
 bool LiteOSCParser::getBoolean(int index) const {
@@ -547,7 +547,7 @@ int LiteOSCParser::parseArgs(const uint8_t *buf, int off, int len) {
         if (off + 4 > len) {
           return -1;
         }
-        int32_t size = getInt(&buf[off]);
+        int32_t size = getUint(&buf[off]);
         if (size < 0) {
           return -1;
         }

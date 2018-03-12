@@ -85,7 +85,7 @@ class LiteOSCParser {
   bool addLong(int64_t h);
 
   // Adds a 64-bit time argument.
-  bool addTime(int64_t t);
+  bool addTime(uint64_t t);
 
   // Adds a 64-bit double argument.
   bool addDouble(double d);
@@ -294,31 +294,31 @@ class LiteOSCParser {
            buf_[tagsIndex_ + index + 1] == tag;
   }
 
-  // Gets a big-endian-encoded int32 from the given buffer.
-  static int32_t getInt(const uint8_t *buf) {
-    return int32_t{*(buf+0)} << 24 |
-           int32_t{*(buf+1)} << 16 |
-           int32_t{*(buf+2)} << 8 |
-           int32_t{*(buf+3)};
+  // Gets a big-endian-encoded uint32 from the given buffer.
+  static uint32_t getUint(const uint8_t *buf) {
+    return uint32_t{*(buf+0)} << 24 |
+           uint32_t{*(buf+1)} << 16 |
+           uint32_t{*(buf+2)} << 8 |
+           uint32_t{*(buf+3)};
   }
 
-  // Stores a big-endian-encoded int32 into the given buffer.
-  static void setInt(uint8_t *buf, int32_t i) {
+  // Stores a big-endian-encoded uint32 into the given buffer.
+  static void setUint(uint8_t *buf, uint32_t i) {
     *(buf++) = i >> 24;
     *(buf++) = i >> 16;
     *(buf++) = i >> 8;
     *buf     = i;
   }
 
-  // Gets a big-endian-encoded int64 from the given buffer.
-  static int64_t getLong(const uint8_t *buf) {
-    return (int64_t{getInt(buf)} << 32) | int64_t{getInt(buf + 4)};
+  // Gets a big-endian-encoded uint64 from the given buffer.
+  static uint64_t getUlong(const uint8_t *buf) {
+    return (uint64_t{getUint(buf)} << 32) | uint64_t{getUint(buf + 4)};
   }
 
-  // Stores a big-endian-encoded int64 into the given buffer.
-  static void setLong(uint8_t *buf, int64_t h) {
-    setInt(buf, h >> 32);
-    setInt(buf + 4, h);
+  // Stores a big-endian-encoded uint64 into the given buffer.
+  static void setUlong(uint8_t *buf, uint64_t h) {
+    setUint(buf, h >> 32);
+    setUint(buf + 4, h);
   }
 
   // Similar to strcmp, this returns whether the two strings match, but
