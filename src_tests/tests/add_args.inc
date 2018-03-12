@@ -163,10 +163,10 @@ test(add_first_time) {
   assertEqual(osc.getAddress(), "/a");
   assertEqual(osc.getArgCount(), 0);
 
-  assertTrue(osc.addTime(0x0102030405060708LL));
+  assertTrue(osc.addTime(0x0102030405060708ULL));
   assertEqual(osc.getArgCount(), 1);
   assertTrue(osc.isTime(0));
-  assertTrue(osc.getTime(0) == 0x0102030405060708LL);
+  assertTrue(osc.getTime(0) == 0x0102030405060708ULL);
 
   const char b2[16]{ '/', 'a', '\0', 0, ',', 't', '\0', 0,
                      0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08 };
