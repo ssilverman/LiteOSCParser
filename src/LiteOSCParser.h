@@ -61,6 +61,12 @@ class LiteOSCParser {
   // be checked with a call to isMemoryError().
   bool init(const char *address);
 
+  // Clears the message. Under the covers, this calls init with an
+  // empty string and then ignores the result.
+  void clear() {
+    init("");
+  }
+
   // Gets the total size of the encoded message.
   int getMessageSize() const {
     return bufSize_;

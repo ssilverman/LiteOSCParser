@@ -7,6 +7,7 @@ This document details the changes between each release.
 ### Added
 
 * OSC bundle support, via a simple `OSCBundle` container class.
+* A `LiteOSCParser::clear()` function that empties the message.
 
 ### Changed
 
