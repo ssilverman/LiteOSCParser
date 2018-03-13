@@ -38,7 +38,7 @@ void setup() {
                   osc.fullMatch(0, "/abc/d") ? "true" : "false");
     Serial.printf("  Should not fully match \"/abc/\": false == %s\n",
                   osc.fullMatch(0, "/abc/") ? "true" : "false");
-    Serial.printf("  Should partially match \"/abc\": 0 == %d\n",
+    Serial.printf("  Should partially match \"/abc\": 4 == %d\n",
                   osc.match(0, "/abc"));
     Serial.printf("  Should not partially match \"/abc/\": 0 == %d\n",
                   osc.match(0, "/abc/"));
