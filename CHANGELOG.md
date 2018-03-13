@@ -9,6 +9,7 @@ This document details the changes between each release.
 * OSC bundle support, via a simple `OSCBundle` container class.
 * A `LiteOSCParser::clear()` function that empties the message.
 * A test for out-of-range matching.
+* An all-in-one example.
 
 ### Changed
 
