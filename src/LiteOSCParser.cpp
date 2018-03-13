@@ -353,7 +353,10 @@ int LiteOSCParser::match(int offset, const char *pattern) const {
     return -1;
   }
   if (offset == addressLen_) {
-    return offset;
+    if (*pattern == '\0') {
+      return offset;
+    }
+    return 0;
   }
 
   int loc;
