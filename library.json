@@ -1,6 +1,6 @@
 {
   "name": "LiteOSCParser",
-  "description": "An OSC processing library.",
+  "description": "A lightweight OSC processing library.",
   "keywords": "osc, structured-data, arduino, teensy",
   "authors": {
     "name": "Shawn Silverman",
