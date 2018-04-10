@@ -305,18 +305,18 @@ class LiteOSCParser {
 
   // Gets a big-endian-encoded uint32 from the given buffer.
   static uint32_t getUint(const uint8_t *buf) {
-    return uint32_t{*(buf+0)} << 24 |
-           uint32_t{*(buf+1)} << 16 |
-           uint32_t{*(buf+2)} << 8 |
-           uint32_t{*(buf+3)};
+    return uint32_t{buf[0]} << 24 |
+           uint32_t{buf[1]} << 16 |
+           uint32_t{buf[2]} << 8 |
+           uint32_t{buf[3]};
   }
 
   // Stores a big-endian-encoded uint32 into the given buffer.
   static void setUint(uint8_t *buf, uint32_t i) {
-    *(buf++) = i >> 24;
-    *(buf++) = i >> 16;
-    *(buf++) = i >> 8;
-    *buf     = i;
+    buf[0] = i >> 24;
+    buf[1] = i >> 16;
+    buf[2] = i >> 8;
+    buf[3] = i;
   }
 
   // Gets a big-endian-encoded uint64 from the given buffer.
