@@ -414,6 +414,11 @@ class OSCBundle {
   // at least once or insufficient memory.
   bool addBundle(const OSCBundle &bundle);
 
+  // Parses the given buffer and returns whether it is a valid bundle. This
+  // recursively looks into sub-bundles. If a bundle element is an OSC message
+  // then a rudimentary check for starting with a '/' character is performed.
+  static bool parse(const uint8_t *buf, int32_t len);
+
  private:
   // Adds content to the bundle. This returns false if init has not
   // been called at least once.

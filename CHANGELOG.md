@@ -2,6 +2,12 @@
 
 This document details the changes between each release.
 
+## [1.2.0]
+
+### Added
+
+* OSC bundle parsing.
+
 ## [1.1.0]
 
 ### Added

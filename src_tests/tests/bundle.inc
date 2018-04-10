@@ -113,3 +113,33 @@ test(bundle_reinit) {
     assertEqual(bundle.buf()[i], b[i]);
   }
 }
+
+test(bundle_parse) {
+  using OSCBundle = ::qindesign::osc::OSCBundle;
+
+  uint8_t b[52]{ '#', 'b', 'u', 'n', 'd', 'l', 'e', '\0',
+                 0, 0, 0, 0, 0, 0, 0, 1,
+                 0, 0, 0, 16,
+                 '#', 'b', 'u', 'n', 'd', 'l', 'e', '\0',
+                 0, 0, 0, 0, 0, 0, 0, 1,
+                 0, 0, 0, 4,
+                 '/', 'a', '\0', 0,
+                 0, 0, 0, 4,
+                 'x', 'a', '\0', 0 };
+  assertFalse(OSCBundle::parse(b, 15));  // len < 16
+  assertFalse(OSCBundle::parse(b, 17));  // len % 4 != 0
+  assertTrue(OSCBundle::parse(b, 16));
+  b[0] = 'x';
+  assertFalse(OSCBundle::parse(b, 16));  // Not a bundle
+  b[0] = '#';
+  assertTrue(OSCBundle::parse(b, 44));  // With one nested bundle and one message
+  assertFalse(OSCBundle::parse(b, 52));  // Message does not start with '/'
+  b[48] = '/';
+  assertTrue(OSCBundle::parse(b, 52));
+  b[47] = 3;
+  assertFalse(OSCBundle::parse(b, 52));  // Message len % 4 != 0
+  b[47] = 0;
+  assertFalse(OSCBundle::parse(b, 48));  // Message len == 0
+  b[47] = 4;
+  assertFalse(OSCBundle::parse(b, 48));  // Message exceeds total length
+}

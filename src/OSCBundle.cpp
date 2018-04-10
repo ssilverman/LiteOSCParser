@@ -67,7 +67,35 @@ bool OSCBundle::addMessage(const LiteOSCParser &osc) {
 }
 
 bool OSCBundle::addBundle(const OSCBundle &bundle) {
-  return add(bundle.buf_, bundle.size());
+  return add(bundle.buf(), bundle.size());
+}
+
+bool OSCBundle::parse(const uint8_t *buf, int32_t len) {
+  if (len < 16 || (len & 0x03) != 0) {
+    return false;
+  }
+  if (memcmp(buf, "#bundle", 8) != 0) {
+    return false;
+  }
+  int index = 16;
+  while (index < len) {
+    int32_t size = static_cast<int32_t>(
+        uint32_t{buf[index]} << 24 | uint32_t{buf[index + 1]} << 16 |
+        uint32_t{buf[index + 2]} << 8 | uint32_t{buf[index + 3]});
+    index += 4;
+    if (size <= 0 || (size & 0x03) != 0 || index + size > len) {
+      return false;
+    }
+    if (size >= 8 && memcmp(&buf[index], "#bundle", 8) == 0) {
+      if (!parse(&buf[index], size)) {
+        return false;
+      }
+    } else if (buf[index] != '/') {  // Rudimentary check for an OSC message
+      return false;
+    }
+    index += size;
+  }
+  return true;
 }
 
 // --------------------------------------------------------------------------
