@@ -376,6 +376,8 @@ int LiteOSCParser::match(int offset, const char *pattern) const {
   return 0;
 }
 
+// Similar to:
+// https://github.com/ARM-software/arm-trusted-firmware/blob/master/lib/stdlib/strcmp.c
 bool LiteOSCParser::strcmploc(const char *s1, const char *s2, int *loc) {
   int count = 0;
   while (*s1 == *(s2++)) {
