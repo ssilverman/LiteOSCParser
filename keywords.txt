@@ -1,0 +1,63 @@
+#######################################
+# Syntax Coloring Map for LiteOSCParser
+#######################################
+
+#######################################
+# Datatypes (KEYWORD1)
+#######################################
+
+LiteOSCParser	KEYWORD1
+OSCBundle	KEYWORD1
+
+#######################################
+# Methods and Functions (KEYWORD2)
+#######################################
+
+init	KEYWORD2
+clear	KEYWORD2
+getMessageSize	KEYWORD2
+getMessageBuf	KEYWORD2
+addInt	KEYWORD2
+addFloat	KEYWORD2
+addString	KEYWORD2
+addBlob	KEYWORD2
+addLong	KEYWORD2
+addTime	KEYWORD2
+addDouble	KEYWORD2
+addBoolean	KEYWORD2
+isMemoryError	KEYWORD2
+parse	KEYWORD2
+fullMatch	KEYWORD2
+match	KEYWORD2
+getAddress	KEYWORD2
+getArgCount	KEYWORD2
+getTag	KEYWORD2
+isInt	KEYWORD2
+isFloat	KEYWORD2
+isString	KEYWORD2
+isBlob	KEYWORD2
+isLong	KEYWORD2
+isTime	KEYWORD2
+isDouble	KEYWORD2
+isChar	KEYWORD2
+isBoolean	KEYWORD2
+isNull	KEYWORD2
+isImpulse	KEYWORD2
+getInt	KEYWORD2
+getFloat	KEYWORD2
+getString	KEYWORD2
+getBlobLength	KEYWORD2
+getBlob	KEYWORD2
+getLong	KEYWORD2
+getTime	KEYWORD2
+getDouble	KEYWORD2
+getChar	KEYWORD2
+getBoolean	KEYWORD2
+
+#######################################
+# Instances (KEYWORD2)
+#######################################
+
+#######################################
+# Constants (LITERAL1)
+#######################################
