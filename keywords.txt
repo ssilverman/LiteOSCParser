@@ -54,6 +54,11 @@ getDouble	KEYWORD2
 getChar	KEYWORD2
 getBoolean	KEYWORD2
 
+size	KEYWORD2
+buf	KEYWORD2
+addMessage	KEYWORD2
+addBundle	KEYWORD2
+
 #######################################
 # Instances (KEYWORD2)
 #######################################
