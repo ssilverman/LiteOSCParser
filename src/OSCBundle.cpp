@@ -1,5 +1,5 @@
 // OSCBundle.cpp is part of LiteOSCParser.
-// (c) 2018 Shawn Silverman
+// (c) 2018-2019 Shawn Silverman
 
 #include "LiteOSCParser.h"
 

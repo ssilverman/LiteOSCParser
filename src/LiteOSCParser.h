@@ -1,6 +1,6 @@
 // LiteOSCParser.h defines an OSC processor.
 // This is part of LiteOSCParser.
-// (c) 2018 Shawn Silverman
+// (c) 2018-2019 Shawn Silverman
 
 #ifndef LITEOSCPARSER_H_
 #define LITEOSCPARSER_H_

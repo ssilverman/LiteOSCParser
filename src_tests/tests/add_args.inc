@@ -1,5 +1,5 @@
 // add_args.inc is part of LiteOSCParser.
-// (c) 2018 Shawn Silverman
+// (c) 2018-2019 Shawn Silverman
 
 // --------------------------------------------------------------------------
 //  Adding args tests

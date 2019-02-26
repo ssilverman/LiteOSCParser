@@ -1,5 +1,5 @@
 // tests.cpp is part of LiteOSCParser.
-// (c) 2018 Shawn Silverman
+// (c) 2018-2019 Shawn Silverman
 
 // C++ includes
 #if defined(ESP8266)
