@@ -25,12 +25,13 @@ OSCBundle::OSCBundle(int bufCapacity)
       dynamicBuf_(true),
       memoryErr_(false),
       isInitted_(false) {
+  static_assert(sizeof(uint8_t) == 1, "sizeof(uint8_t) != 1");
   if (bufCapacity > 0) {
     dynamicBuf_ = false;
     if (bufCapacity < 16) {
       bufCapacity = 16;
     }
-    buf_ = reinterpret_cast<uint8_t*>(malloc(bufCapacity));
+    buf_ = static_cast<uint8_t*>(malloc(bufCapacity));
     if (buf_ == nullptr) {
       memoryErr_ = true;
     } else {
@@ -136,7 +137,7 @@ bool OSCBundle::ensureCapacity(int size) {
     memoryErr_ = true;
     return false;
   }
-  buf_ = reinterpret_cast<uint8_t*>(realloc(buf_, size));
+  buf_ = static_cast<uint8_t*>(realloc(buf_, size));
   if (buf_ == nullptr) {
     memoryErr_ = true;
     return false;

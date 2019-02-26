@@ -32,9 +32,10 @@ LiteOSCParser::LiteOSCParser(int bufCapacity, int maxArgCount)
       argIndexes_(nullptr),
       argIndexesCapacity_(0),
       dynamicArgIndexes_(true) {
+  static_assert(sizeof(uint8_t) == 1, "sizeof(uint8_t) != 1");
   if (bufCapacity > 0) {
     dynamicBuf_ = false;
-    buf_ = reinterpret_cast<uint8_t*>(malloc(bufCapacity));
+    buf_ = static_cast<uint8_t*>(malloc(bufCapacity));
     if (buf_ == nullptr) {
       memoryErr_ = true;
     } else {
@@ -43,7 +44,7 @@ LiteOSCParser::LiteOSCParser(int bufCapacity, int maxArgCount)
   }
   if (maxArgCount > 0) {
     dynamicArgIndexes_ = false;
-    argIndexes_ = reinterpret_cast<int*>(malloc(maxArgCount * sizeof(int)));
+    argIndexes_ = static_cast<int*>(malloc(maxArgCount * sizeof(int)));
     if (argIndexes_ == nullptr) {
       memoryErr_ = true;
     } else {
@@ -501,7 +502,7 @@ bool LiteOSCParser::ensureCapacity(int size) {
     memoryErr_ = true;
     return false;
   }
-  buf_ = reinterpret_cast<uint8_t*>(realloc(buf_, size));
+  buf_ = static_cast<uint8_t*>(realloc(buf_, size));
   if (buf_ == nullptr) {
     memoryErr_ = true;
     return false;
@@ -519,7 +520,7 @@ bool LiteOSCParser::ensureArgIndexesCapacity(int size) {
     return false;
   }
   argIndexes_ =
-      reinterpret_cast<int*>(realloc(argIndexes_, size * sizeof(int)));
+      static_cast<int*>(realloc(argIndexes_, size * sizeof(int)));
   if (argIndexes_ == nullptr) {
     memoryErr_ = true;
     return false;
