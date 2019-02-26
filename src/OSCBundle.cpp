@@ -128,10 +128,11 @@ bool OSCBundle::add(const uint8_t *buf, int32_t size) {
     return false;
   }
 
-  buf_[bufSize_++] = size >> 24;
-  buf_[bufSize_++] = size >> 16;
-  buf_[bufSize_++] = size >> 8;
-  buf_[bufSize_++] = size;
+  uint32_t u = static_cast<uint32_t>(size);
+  buf_[bufSize_++] = u >> 24;
+  buf_[bufSize_++] = u >> 16;
+  buf_[bufSize_++] = u >> 8;
+  buf_[bufSize_++] = u;
   memcpy(&buf_[bufSize_], buf, size);
   bufSize_ += size;
 
