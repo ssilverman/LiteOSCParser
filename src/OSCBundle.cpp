@@ -4,15 +4,24 @@
 #include "LiteOSCParser.h"
 
 // C++ includes
+#if defined(ESP8266)
+#include <cstdlib>
+#else
 #if __has_include(<cstdlib>)
 #include <cstdlib>
 #else
 #include <stdlib.h>
 #endif
+#endif
+
+#if defined(ESP8266)
+#include <cstring>
+#else
 #if __has_include(<cstring>)
 #include <cstring>
 #else
 #include <string.h>
+#endif
 #endif
 
 namespace qindesign {

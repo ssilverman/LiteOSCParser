@@ -2,10 +2,14 @@
 // (c) 2018 Shawn Silverman
 
 // C++ includes
+#if defined(ESP8266)
+#include <cstdint>
+#else
 #if __has_include(<cstdint>)
 #include <cstdint>
 #else
 #include <stdint.h>
+#endif
 #endif
 
 // Other includes
@@ -17,6 +21,7 @@
 
 ::qindesign::osc::LiteOSCParser osc{64, 4};
 
+#ifdef CORE_TEENSY
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -49,6 +54,7 @@ void __attribute__((naked)) hard_fault_isr() {
 #ifdef __cplusplus
 }  // extern "C"
 #endif
+#endif  // CORE_TEENSY
 
 // The tests
 #include "tests/add_args.inc"
