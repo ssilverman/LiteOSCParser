@@ -4,8 +4,16 @@
 #include "LiteOSCParser.h"
 
 // C++ includes
+#if __has_include(<cstdlib>)
 #include <cstdlib>
+#else
+#include <stdlib.h>
+#endif
+#if __has_include(<cstring>)
 #include <cstring>
+#else
+#include <string.h>
+#endif
 
 // Other includes
 #include <Arduino.h>

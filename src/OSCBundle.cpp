@@ -4,8 +4,16 @@
 #include "LiteOSCParser.h"
 
 // C++ includes
+#if __has_include(<cstdlib>)
 #include <cstdlib>
+#else
+#include <stdlib.h>
+#endif
+#if __has_include(<cstring>)
 #include <cstring>
+#else
+#include <string.h>
+#endif
 
 namespace qindesign {
 namespace osc {
@@ -102,7 +110,7 @@ bool OSCBundle::parse(const uint8_t *buf, int32_t len) {
 //  Private functions
 // --------------------------------------------------------------------------
 
-bool OSCBundle::add(const uint8_t *buf, int size) {
+bool OSCBundle::add(const uint8_t *buf, int32_t size) {
   if (!isInitted_) {
     return false;
   }

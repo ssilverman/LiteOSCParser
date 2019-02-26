@@ -6,7 +6,11 @@
 #define LITEOSCPARSER_H_
 
 // C++ includes
+#if __has_include(<cstdint>)
 #include <cstdint>
+#else
+#include <stdint.h>
+#endif
 
 namespace qindesign {
 namespace osc {
@@ -422,7 +426,7 @@ class OSCBundle {
  private:
   // Adds content to the bundle. This returns false if init has not
   // been called at least once.
-  bool add(const uint8_t *buf, int size);
+  bool add(const uint8_t *buf, int32_t size);
 
   // Ensures that we have enough buffer capacity. This returns whether
   // we do, allocating if necessary. If there isn't enough space then

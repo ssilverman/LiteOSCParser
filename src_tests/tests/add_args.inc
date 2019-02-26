@@ -123,7 +123,7 @@ test(add_first_float) {
   assertEqual(osc.getFloat(0), -1.1f);
 
   const char b2[12]{ '/', 'a', '\0', 0, ',', 'f', '\0', 0,
-                     0xbf, 0x8c, 0xcc, 0xcd };
+                     '\xbf', '\x8c', '\xcc', '\xcd' };
   assertEqual(osc.getMessageSize(), static_cast<int>(sizeof(b2)));
   for (size_t i = 0; i < sizeof(b2); i++) {
     assertEqual(osc.getMessageBuf()[i], b2[i]);
