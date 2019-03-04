@@ -37,7 +37,7 @@ LiteOSCParser::LiteOSCParser(int bufCapacity, int maxArgCount)
   static_assert(sizeof(uint8_t) == 1, "sizeof(uint8_t) == 1");
   if (bufCapacity > 0) {
     dynamicBuf_ = false;
-    buf_ = static_cast<uint8_t*>(malloc(bufCapacity));
+    buf_ = static_cast<uint8_t *>(malloc(bufCapacity));
     if (buf_ == nullptr) {
       memoryErr_ = true;
     } else {
@@ -46,7 +46,7 @@ LiteOSCParser::LiteOSCParser(int bufCapacity, int maxArgCount)
   }
   if (maxArgCount > 0) {
     dynamicArgIndexes_ = false;
-    argIndexes_ = static_cast<int*>(malloc(maxArgCount * sizeof(int)));
+    argIndexes_ = static_cast<int *>(malloc(maxArgCount * sizeof(int)));
     if (argIndexes_ == nullptr) {
       memoryErr_ = true;
     } else {
@@ -83,7 +83,7 @@ bool LiteOSCParser::init(const char *address) {
   if (!ensureCapacity(newSize)) {
     return false;
   }
-  strcpy(reinterpret_cast<char*>(buf_), address);
+  strcpy(reinterpret_cast<char *>(buf_), address);
   memset(&buf_[addrLen + 1], 0, newSize - (addrLen + 1));
   addressLen_ = addrLen;
   tagsLen_ = 0;
@@ -116,7 +116,7 @@ bool LiteOSCParser::addString(const char *s) {
   if (!addArg('s', len)) {
     return false;
   }
-  strcpy(reinterpret_cast<char*>(&buf_[bufSize_ - align(len)]), s);
+  strcpy(reinterpret_cast<char *>(&buf_[bufSize_ - align(len)]), s);
   return true;
 }
 
@@ -356,7 +356,7 @@ bool LiteOSCParser::fullMatch(int offset, const char *pattern) const {
   if (offset == addressLen_) {
     return strlen(pattern) == 0;
   }
-  return strcmp(reinterpret_cast<char*>(&buf_[offset]), pattern) == 0;
+  return strcmp(reinterpret_cast<char *>(&buf_[offset]), pattern) == 0;
 }
 
 int LiteOSCParser::match(int offset, const char *pattern) const {
@@ -371,7 +371,7 @@ int LiteOSCParser::match(int offset, const char *pattern) const {
   }
 
   int loc;
-  if (strcmploc(reinterpret_cast<char*>(&buf_[offset]), pattern, &loc)) {
+  if (strcmploc(reinterpret_cast<char *>(&buf_[offset]), pattern, &loc)) {
     return addressLen_;
   }
   loc += offset;
@@ -406,7 +406,7 @@ bool LiteOSCParser::strcmploc(const char *s1, const char *s2, int *loc) {
 // --------------------------------------------------------------------------
 
 const char *LiteOSCParser::getAddress() const {
-  return reinterpret_cast<char*>(&buf_[0]);
+  return reinterpret_cast<char *>(&buf_[0]);
 }
 
 int32_t LiteOSCParser::getInt(int index) const {
@@ -430,7 +430,7 @@ const char *LiteOSCParser::getString(int index) const {
   if (!isString(index)) {
     return nullptr;
   }
-  return reinterpret_cast<char*>(&buf_[argIndexes_[index]]);
+  return reinterpret_cast<char *>(&buf_[argIndexes_[index]]);
 }
 
 int LiteOSCParser::getBlobLength(int index) const {
@@ -504,7 +504,7 @@ bool LiteOSCParser::ensureCapacity(int size) {
     memoryErr_ = true;
     return false;
   }
-  buf_ = static_cast<uint8_t*>(realloc(buf_, size));
+  buf_ = static_cast<uint8_t *>(realloc(buf_, size));
   if (buf_ == nullptr) {
     memoryErr_ = true;
     return false;
@@ -521,8 +521,7 @@ bool LiteOSCParser::ensureArgIndexesCapacity(int size) {
     memoryErr_ = true;
     return false;
   }
-  argIndexes_ =
-      static_cast<int*>(realloc(argIndexes_, size * sizeof(int)));
+  argIndexes_ = static_cast<int *>(realloc(argIndexes_, size * sizeof(int)));
   if (argIndexes_ == nullptr) {
     memoryErr_ = true;
     return false;
