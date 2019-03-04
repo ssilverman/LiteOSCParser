@@ -6,14 +6,14 @@
 #define LITEOSCPARSER_H_
 
 // C++ includes
-#if defined(ESP8266)
-#include <cstdint>
-#else
+#ifdef __has_include
 #if __has_include(<cstdint>)
 #include <cstdint>
 #else
 #include <stdint.h>
 #endif
+#else
+#include <cstdint>
 #endif
 
 namespace qindesign {

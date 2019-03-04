@@ -4,28 +4,21 @@
 #include "LiteOSCParser.h"
 
 // C++ includes
-#if defined(ESP8266)
-#include <cstdlib>
-#else
+#ifdef __has_include
 #if __has_include(<cstdlib>)
 #include <cstdlib>
 #else
 #include <stdlib.h>
 #endif
-#endif
-
-#if defined(ESP8266)
-#include <cstring>
-#else
 #if __has_include(<cstring>)
 #include <cstring>
 #else
 #include <string.h>
 #endif
+#else
+#include <cstdlib>
+#include <cstring>
 #endif
-
-// Other includes
-#include <Arduino.h>
 
 namespace qindesign {
 namespace osc {
@@ -41,7 +34,7 @@ LiteOSCParser::LiteOSCParser(int bufCapacity, int maxArgCount)
       argIndexes_(nullptr),
       argIndexesCapacity_(0),
       dynamicArgIndexes_(true) {
-  static_assert(sizeof(uint8_t) == 1, "sizeof(uint8_t) != 1");
+  static_assert(sizeof(uint8_t) == 1, "sizeof(uint8_t) == 1");
   if (bufCapacity > 0) {
     dynamicBuf_ = false;
     buf_ = static_cast<uint8_t*>(malloc(bufCapacity));

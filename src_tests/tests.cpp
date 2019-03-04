@@ -2,14 +2,14 @@
 // (c) 2018-2019 Shawn Silverman
 
 // C++ includes
-#if defined(ESP8266)
-#include <cstdint>
-#else
+#ifdef __has_include
 #if __has_include(<cstdint>)
 #include <cstdint>
 #else
 #include <stdint.h>
 #endif
+#else
+#include <cstdint>
 #endif
 
 // Other includes
@@ -21,7 +21,7 @@
 
 ::qindesign::osc::LiteOSCParser osc{64, 4};
 
-#ifdef CORE_TEENSY
+#if defined(CORE_TEENSY) && !defined(TEENSYLC)
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -66,8 +66,8 @@ void __attribute__((naked)) hard_fault_isr() {
 #include "tests/packet.inc"
 
 void setup() {
-  Serial.begin(9600);
-  while (!Serial && millis() < 2000) {
+  Serial.begin(115200);
+  while (!Serial && millis() < 4000) {
   }
   delay(4000);
 }

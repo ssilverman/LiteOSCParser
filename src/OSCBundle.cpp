@@ -4,24 +4,20 @@
 #include "LiteOSCParser.h"
 
 // C++ includes
-#if defined(ESP8266)
-#include <cstdlib>
-#else
+#ifdef __has_include
 #if __has_include(<cstdlib>)
 #include <cstdlib>
 #else
 #include <stdlib.h>
 #endif
-#endif
-
-#if defined(ESP8266)
-#include <cstring>
-#else
 #if __has_include(<cstring>)
 #include <cstring>
 #else
 #include <string.h>
 #endif
+#else
+#include <cstdlib>
+#include <cstring>
 #endif
 
 namespace qindesign {
@@ -34,7 +30,7 @@ OSCBundle::OSCBundle(int bufCapacity)
       dynamicBuf_(true),
       memoryErr_(false),
       isInitted_(false) {
-  static_assert(sizeof(uint8_t) == 1, "sizeof(uint8_t) != 1");
+  static_assert(sizeof(uint8_t) == 1, "sizeof(uint8_t) == 1");
   if (bufCapacity > 0) {
     dynamicBuf_ = false;
     if (bufCapacity < 16) {
