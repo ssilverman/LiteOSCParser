@@ -2,6 +2,34 @@
 
 This document details the changes between each release.
 
+## [1.3.0]
+
+### Changed
+
+* Changed parameter types of the private `OSCBundle::add(const uint8_t *, int)`
+  to `OSCBundle::add(const uint8_t *, int32_t)`.
+* Tested with
+  [ArduinoUnit v3.0.2](https://github.com/mmurdoch/arduinounit/releases/tag/v3.0.2).
+* On systems where the size of type `double` is not 8 bytes,
+  `LiteOSCParser::getDouble` will always return zero and
+  `LiteOSCParser::addDouble` will always return `false`.
+
+### Fixed
+
+* Compiles on more platforms (listed using PlatformIO board names): `teensylc`,
+  `teensy35`, `teensy36`, `megaatmega1280`, `megaatmega2560`, `uno`, `yun`,
+  `featheresp32`, `huzzah`, `esp12e`, `nucleo_f302r8`, `nucleo_f303k8`,
+  `nucleo_f103rb`. This is in addition to just compiling and testing on
+  `teensy31`.
+* Now making use of PlatformIO's `build_unflags` to ensure that the
+  `-fsingle-precision-constant` does not take effect; the compiler was
+  complaining that some float literals were still overflowing, even though
+  `-fno-single-precision-constant` was being passed in `build_flags`.
+* Changed `LiteOSCParser::addFloat` and `LiteOSCParser::getFloat` to use
+  `static_assert`s to guarantee that the size of type `float` is 4 bytes. This
+  ensures that memory is copied into a space having the correct size.
+
+
 ## [1.2.1]
 
 ### Added
@@ -42,4 +70,4 @@ of memory being used internally. Bundles are not currently supported.
 
 ---
 
-Copyright (c) 2018 Shawn Silverman
+Copyright (c) 2018-2019 Shawn Silverman

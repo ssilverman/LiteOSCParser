@@ -1,4 +1,4 @@
-# LiteOSCParser
+# Readme for LiteOSCParser v1.3.0
 
 This library parses and constructs OSC messages. It is designed to minimize
 memory usage by providing a way to pre-allocate the internal buffers.
@@ -37,16 +37,14 @@ Only the following files and directories need to be there:
 ## Running the tests
 
 There are tests included in this project that rely on a project called
-[ArduinoUnit](https://github.com/mmurdoch/arduinounit). This should work
-out of the box on a Teensy, but some modifications may need to be made for
-ESP8266-based devices.
+[ArduinoUnit](https://github.com/mmurdoch/arduinounit).
 
 Note that the code for ArduinoUnit is not included in this library and needs
 to be downloaded separately.
 
 ## Code style
 
-Code style for this project follows the
+Code style for this project mostly follows the
 [Google C++ Style Guide](https://google.github.io/styleguide/cppguide.html).
 
 ## References
@@ -58,4 +56,4 @@ Code style for this project follows the
 
 ---
 
-Copyright (c) 2018 Shawn Silverman
+Copyright (c) 2018-2019 Shawn Silverman
