@@ -1,4 +1,5 @@
-.DS_Store
+.pio
 .pioenvs
 .piolibdeps
-.vscode
+.vscode/
+.DS_Store
