@@ -412,21 +412,37 @@ const char *LiteOSCParser::getAddress() const {
 }
 
 int32_t LiteOSCParser::getInt(int index) const {
-  if (!isInt(index)) {
+  int v;
+  if (!getIfInt(index, &v)) {
     return 0;
   }
-  return getUint(&buf_[argIndexes_[index]]);
+  return v;
+}
+
+bool LiteOSCParser::getIfInt(int index, int32_t *v) const {
+  if (!isInt(index)) {
+    return false;
+  }
+  *v = getUint(&buf_[argIndexes_[index]]);
+  return true;
 }
 
 float LiteOSCParser::getFloat(int index) const {
-  if (!isFloat(index)) {
+  float v;
+  if (!getIfFloat(index, &v)) {
     return 0.0f;
+  }
+  return v;
+}
+
+bool LiteOSCParser::getIfFloat(int index, float *v) const {
+  if (!isFloat(index)) {
+    return false;
   }
   static_assert(sizeof(float) == 4, "sizeof(float) == 4");
   uint32_t u = getUint(&buf_[argIndexes_[index]]);
-  float f;
-  memcpy(&f, &u, 4);
-  return f;
+  memcpy(v, &u, 4);
+  return true;
 }
 
 const char *LiteOSCParser::getString(int index) const {
@@ -455,42 +471,85 @@ const uint8_t *LiteOSCParser::getBlob(int index) const {
 }
 
 int64_t LiteOSCParser::getLong(int index) const {
-  if (!isLong(index)) {
+  int64_t v;
+  if (!getIfLong(index, &v)) {
     return 0;
   }
-  return getUlong(&buf_[argIndexes_[index]]);
+  return v;
+}
+
+bool LiteOSCParser::getIfLong(int index, int64_t *v) const {
+  if (!isLong(index)) {
+    return false;
+  }
+  *v = getUlong(&buf_[argIndexes_[index]]);
+  return true;
 }
 
 uint64_t LiteOSCParser::getTime(int index) const {
-  if (!isTime(index)) {
+  uint64_t v;
+  if (!getIfTime(index, &v)) {
     return 0;
   }
-  return getUlong(&buf_[argIndexes_[index]]);
+  return v;
+}
+
+bool LiteOSCParser::getIfTime(int index, uint64_t *v) const {
+  if (!isTime(index)) {
+    return false;
+  }
+  *v = getUlong(&buf_[argIndexes_[index]]);
+  return true;
 }
 
 double LiteOSCParser::getDouble(int index) const {
-  if (sizeof(double) != 8 || !isDouble(index)) {
+  double v;
+  if (!getIfDouble(index, &v)) {
     return 0.0;
+  }
+  return v;
+}
+
+bool LiteOSCParser::getIfDouble(int index, double *v) const {
+  if (sizeof(double) != 8 || !isDouble(index)) {
+    return false;
   }
   // static_assert(sizeof(double) == 8, "sizeof(double) == 8");
   uint64_t u = getUlong(&buf_[argIndexes_[index]]);
-  double d;
-  memcpy(&d, &u, 8);
-  return d;
+  memcpy(v, &u, 8);
+  return true;
 }
 
 int32_t LiteOSCParser::getChar(int index) const {
-  if (!isChar(index)) {
+  int32_t v;
+  if (!getIfChar(index, &v)) {
     return 0;
   }
-  return getUint(&buf_[argIndexes_[index]]);
+  return v;
+}
+
+bool LiteOSCParser::getIfChar(int index, int32_t *v) const {
+  if (!isChar(index)) {
+    return false;
+  }
+  *v = getUint(&buf_[argIndexes_[index]]);
+  return true;
 }
 
 bool LiteOSCParser::getBoolean(int index) const {
+  bool v;
+  if (!getIfBoolean(index, &v)) {
+    return false;
+  }
+  return v;
+}
+
+bool LiteOSCParser::getIfBoolean(int index, bool *v) const {
   if (!isBoolean(index)) {
     return false;
   }
-  return buf_[tagsIndex_ + 1 + index] == 'T';
+  *v = (buf_[tagsIndex_ + 1 + index] == 'T');
+  return true;
 }
 
 // --------------------------------------------------------------------------

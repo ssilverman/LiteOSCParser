@@ -42,6 +42,39 @@ There are tests included in this project that rely on a project called
 Note that the code for ArduinoUnit is not included in this library and needs
 to be downloaded separately.
 
+## Notes on use
+
+### Retrieving values
+
+By default, if a value does not exist at a given index, a default value will be
+returned. For example, `getFloat(2)` will try to return a 32-bit float value at
+index 2. If the index is out of range or if the value type at that index is not
+a float then a value of 0.0f will be returned.
+
+To avoid this scenario, the following code is useful:
+
+```c++
+if (isFloat(2)) {
+  float f = getFloat(2);
+  // Do something with the value
+}
+```
+
+Internally, `getFloat` also calls `isFloat` with the same index, and so
+`isFloat` is actually called twice. To avoid two calls, there exist other getter
+functions named `getIfXXX` (replacing _XXX_ with the appropriate type). For
+example, `getIfFloat` to retrieve a float. These functions return a `bool`:
+`true` if the value exists and was retrieved, and `false` otherwise.
+
+For example:
+
+```c++
+float f;
+if (getIfFloat(2, &f)) {
+  // Do something with 'f'
+}
+```
+
 ## Code style
 
 Code style for this project mostly follows the

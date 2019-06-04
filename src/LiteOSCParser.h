@@ -225,12 +225,28 @@ class LiteOSCParser {
   // if the index is out of range or if the argument is the wrong type.
   int32_t getInt(int index) const;
 
+  // Gets the value at the given index only if it exists and is a 32-bit int.
+  // This will return `true` if the value was successfully retrieved and
+  // `false` otherwise.
+  //
+  // This function is useful to avoid two calls to `isInt`, once by the calling
+  // code, and a second time by `getInt`.
+  bool getIfInt(int index, int32_t *v) const;
+
   // Gets the 32-bit float at the given index. This will return zero
   // if the index is out of range or if the argument is the wrong type.
   float getFloat(int index) const;
 
+  // Gets the value at the given index only if it exists and is a 32-bit float.
+  // This will return `true` if the value was successfully retrieved and
+  // `false` otherwise.
+  //
+  // This function is useful to avoid two calls to `isFloat`, once by the
+  // calling code, and a second time by `getFloat`.
+  bool getIfFloat(int index, float *v) const;
+
   // Gets a pointer to the string stored at the given index. This returns
-  // a pointer into the internal buffer, or nullptr if the index if out
+  // a pointer into the internal buffer, or nullptr if the index is out
   // of range or if the argument is the wrong type.
   const char *getString(int index) const;
 
@@ -248,6 +264,14 @@ class LiteOSCParser {
   // if the index is out of range or if the argument is the wrong type.
   int64_t getLong(int index) const;
 
+  // Gets the value at the given index only if it exists and is a 64-bit long.
+  // This will return `true` if the value was successfully retrieved and
+  // `false` otherwise.
+  //
+  // This function is useful to avoid two calls to `isLong`, once by the calling
+  // code, and a second time by `getLong`.
+  bool getIfLong(int index, int64_t *v) const;
+
   // Gets the 64-bit OSC-timetag at the given index. This will return zero
   // if the index is out of range or if the argument is the wrong type.
   //
@@ -257,19 +281,53 @@ class LiteOSCParser {
   // See RFC 1305 (NTP) and RFC 2030 (SNTP).
   uint64_t getTime(int index) const;
 
+  // Gets the value at the given index only if it exists and is a 64-bit time.
+  // This will return `true` if the value was successfully retrieved and
+  // `false` otherwise.
+  //
+  // This function is useful to avoid two calls to `isTime`, once by the calling
+  // code, and a second time by `getTime`.
+  bool getIfTime(int index, uint64_t *v) const;
+
   // Gets the 64-bit double at the given index. This will return zero
   // if the index is out of range or if the argument is the wrong type.
   //
   // This will also return zero if the size of type `double` is not 8 bytes.
   double getDouble(int index) const;
 
+  // Gets the value at the given index only if it exists and is a 64-bit double.
+  // This will return `true` if the value was successfully retrieved and
+  // `false` otherwise.
+  //
+  // This will also return false if the size of type `double` is not 8 bytes.
+  //
+  // This function is useful to avoid two calls to `isDouble`, once by the
+  // calling code, and a second time by `getDouble`.
+  bool getIfDouble(int index, double *v) const;
+
   // Gets the 32-bit char at the given index. This will return zero
   // if the index is out of range or if the argument is the wrong type.
   int32_t getChar(int index) const;
 
+  // Gets the value at the given index only if it exists and is a 32-bit char.
+  // This will return `true` if the value was successfully retrieved and
+  // `false` otherwise.
+  //
+  // This function is useful to avoid two calls to `isChar`, once by the calling
+  // code, and a second time by `getChar`.
+  bool getIfChar(int index, int32_t *v) const;
+
   // Gets the boolean value at the given index. This will return false
   // if the index is out of range or if the argument is the wrong type.
   bool getBoolean(int index) const;
+
+  // Gets the value at the given index only if it exists and is a boolean. This
+  // This will return `true` if the value was successfully retrieved and
+  // `false` otherwise.
+  //
+  // This function is useful to avoid two calls to `isBoolean`, once by the
+  // calling code, and a second time by `getBoolean`.
+  bool getIfBoolean(int index, bool *v) const;
 
  private:
   // Ensures that we have enough buffer capacity. This returns whether

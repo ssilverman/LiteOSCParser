@@ -65,6 +65,9 @@ test(args_one_int) {
   assertFalse(osc.isFloat(0));
   assertEqual(osc.getInt(0), 0x01020304);
   assertEqual(osc.getFloat(0), 0.0f);
+  int32_t v;
+  assertTrue(osc.getIfInt(0, &v));
+  assertEqual(v, 0x01020304);
 }
 
 test(args_one_float) {
@@ -81,6 +84,9 @@ test(args_one_float) {
   assertFalse(osc.isInt(0));
   assertEqual(osc.getFloat(0), 100000.0f);
   assertEqual(osc.getInt(0), 0);
+  float v;
+  assertTrue(osc.getIfFloat(0, &v));
+  assertEqual(v, 100000.0f);
 }
 
 test(args_one_long) {
@@ -95,6 +101,9 @@ test(args_one_long) {
   assertEqual(osc.getArgCount(), 1);
   assertTrue(osc.isLong(0));
   assertTrue(osc.getLong(0) == 0x0102030405060708LL);
+  int64_t v;
+  assertTrue(osc.getIfLong(0, &v));
+  assertEqual(v, 0x0102030405060708LL);
 }
 
 test(args_one_time) {
@@ -109,6 +118,9 @@ test(args_one_time) {
   assertEqual(osc.getArgCount(), 1);
   assertTrue(osc.isTime(0));
   assertTrue(osc.getTime(0) == 0x0102030405060708LL);
+  uint64_t v;
+  assertTrue(osc.getIfTime(0, &v));
+  assertEqual(v, 0x0102030405060708LL);
 }
 
 test(args_one_double) {
@@ -123,6 +135,9 @@ test(args_one_double) {
   assertEqual(osc.getArgCount(), 1);
   assertTrue(osc.isDouble(0));
   assertEqual(osc.getDouble(0), 1.1);
+  double v;
+  assertTrue(osc.getIfDouble(0, &v));
+  assertEqual(v, 1.1);
 }
 
 test(args_one_char) {
@@ -137,6 +152,9 @@ test(args_one_char) {
   assertEqual(osc.getArgCount(), 1);
   assertTrue(osc.isChar(0));
   assertEqual(osc.getChar(0), 0x61);
+  int32_t v;
+  assertTrue(osc.getIfChar(0, &v));
+  assertEqual(v, 0x61);
 }
 
 test(args_one_true) {
@@ -150,6 +168,9 @@ test(args_one_true) {
   assertEqual(osc.getArgCount(), 1);
   assertTrue(osc.isBoolean(0));
   assertEqual(osc.getBoolean(0), true);
+  bool v;
+  assertTrue(osc.getIfBoolean(0, &v));
+  assertEqual(v, true);
 }
 
 test(args_one_false) {
@@ -163,6 +184,9 @@ test(args_one_false) {
   assertEqual(osc.getArgCount(), 1);
   assertTrue(osc.isBoolean(0));
   assertEqual(osc.getBoolean(0), false);
+  bool v;
+  assertTrue(osc.getIfBoolean(0, &v));
+  assertEqual(v, false);
 }
 
 test(args_one_true_one_int) {
