@@ -150,7 +150,7 @@ bool LiteOSCParser::addTime(uint64_t t) {
 }
 
 bool LiteOSCParser::addDouble(double d) {
-  if (!addArg('d', 8) || sizeof(double) != 8) {
+  if (sizeof(double) != 8 || !addArg('d', 8)) {
     return false;
   }
   // static_assert(sizeof(double) == 8, "sizeof(double) == 8");
@@ -469,7 +469,7 @@ uint64_t LiteOSCParser::getTime(int index) const {
 }
 
 double LiteOSCParser::getDouble(int index) const {
-  if (!isDouble(index) || sizeof(double) != 8) {
+  if (sizeof(double) != 8 || !isDouble(index)) {
     return 0.0;
   }
   // static_assert(sizeof(double) == 8, "sizeof(double) == 8");
