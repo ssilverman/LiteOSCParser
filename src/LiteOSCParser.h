@@ -105,6 +105,8 @@ class LiteOSCParser {
   bool addTime(uint64_t t);
 
   // Adds a 64-bit double argument.
+  //
+  // This will return `false` if the size of type `double` is not 8 bytes.
   bool addDouble(double d);
 
   // Adds a boolean.
@@ -257,6 +259,8 @@ class LiteOSCParser {
 
   // Gets the 64-bit double at the given index. This will return zero
   // if the index is out of range or if the argument is the wrong type.
+  //
+  // This will also return zero if the size of type `double` is not 8 bytes.
   double getDouble(int index) const;
 
   // Gets the 32-bit char at the given index. This will return zero

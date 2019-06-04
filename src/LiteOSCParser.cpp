@@ -105,6 +105,7 @@ bool LiteOSCParser::addFloat(float f) {
   if (!addArg('f', 4)) {
     return false;
   }
+  static_assert(sizeof(float) == 4, "sizeof(float) == 4");
   uint32_t u;
   memcpy(&u, &f, 4);
   setUint(&buf_[bufSize_ - 4], u);
@@ -149,9 +150,10 @@ bool LiteOSCParser::addTime(uint64_t t) {
 }
 
 bool LiteOSCParser::addDouble(double d) {
-  if (!addArg('d', 8)) {
+  if (!addArg('d', 8) || sizeof(double) != 8) {
     return false;
   }
+  // static_assert(sizeof(double) == 8, "sizeof(double) == 8");
   uint64_t u;
   memcpy(&u, &d, 8);
   setUlong(&buf_[bufSize_ - 8], u);
@@ -420,6 +422,7 @@ float LiteOSCParser::getFloat(int index) const {
   if (!isFloat(index)) {
     return 0.0f;
   }
+  static_assert(sizeof(float) == 4, "sizeof(float) == 4");
   uint32_t u = getUint(&buf_[argIndexes_[index]]);
   float f;
   memcpy(&f, &u, 4);
@@ -466,10 +469,11 @@ uint64_t LiteOSCParser::getTime(int index) const {
 }
 
 double LiteOSCParser::getDouble(int index) const {
-  if (!isDouble(index)) {
+  if (!isDouble(index) || sizeof(double) != 8) {
     return 0.0;
   }
-  int64_t u = getUlong(&buf_[argIndexes_[index]]);
+  // static_assert(sizeof(double) == 8, "sizeof(double) == 8");
+  uint64_t u = getUlong(&buf_[argIndexes_[index]]);
   double d;
   memcpy(&d, &u, 8);
   return d;
