@@ -1,4 +1,4 @@
-# Readme for LiteOSCParser v1.3.0
+# Readme for LiteOSCParser v1.4.0
 
 This library parses and constructs OSC messages. It is designed to minimize
 memory usage by providing a way to pre-allocate the internal buffers.

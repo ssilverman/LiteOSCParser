@@ -2,6 +2,14 @@
 
 This document details the changes between each release.
 
+## [1.4.0]
+
+### Added
+* New `getIfXXX` functions that complement the `getXXX` functions by checking
+  the type and possibly filling in the value in one step. These avoid two calls
+  to `isXXX` when retrieving values: once by the calling code and once inside
+  the `getXXX` functions.
+
 ## [1.3.0]
 
 ### Changed
