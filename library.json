@@ -1,6 +1,6 @@
 {
   "name": "LiteOSCParser",
-  "description": "A lightweight OSC processing library.",
+  "description": "A lightweight OSC processing library. This aims to be as memory-efficient as possible. Internally, this uses only two configurable contiguous blocks of memory, one for data and another for an index, that can be fixed to a specific size.",
   "keywords": "osc, structured-data, arduino",
   "authors": {
     "name": "Shawn Silverman",
