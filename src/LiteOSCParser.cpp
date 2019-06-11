@@ -412,7 +412,7 @@ const char *LiteOSCParser::getAddress() const {
 }
 
 int32_t LiteOSCParser::getInt(int index) const {
-  int v;
+  int32_t v;
   if (!getIfInt(index, &v)) {
     return 0;
   }
